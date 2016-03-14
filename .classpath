@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="BulletinBoardServer/helloendpoints/src/main/java"/>
+	<classpathentry kind="lib" path="BulletinBoardServer/helloendpoints/target/helloendpoints-1.0-SNAPSHOT/WEB-INF/lib/appengine-api-1.0-sdk-1.9.32.jar"/>
+	<classpathentry kind="lib" path="BulletinBoardServer/helloendpoints/target/helloendpoints-1.0-SNAPSHOT/WEB-INF/lib/appengine-endpoints-1.9.32.jar"/>
+	<classpathentry kind="lib" path="BulletinBoardServer/helloendpoints/target/helloendpoints-1.0-SNAPSHOT/WEB-INF/lib/javax.inject-1.jar"/>
+	<classpathentry kind="lib" path="BulletinBoardServer/helloendpoints/target/helloendpoints-1.0-SNAPSHOT/WEB-INF/lib/jdo-api-3.1.jar"/>
+	<classpathentry kind="lib" path="BulletinBoardServer/helloendpoints/target/helloendpoints-1.0-SNAPSHOT/WEB-INF/lib/transaction-api-1.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="BulletinBoardServer/helloendpoints/target/helloendpoints-1.0-SNAPSHOT/WEB-INF/classes"/>
+</classpath>
