@@ -12,6 +12,10 @@
 		657A0C451C8016250053576B /* ScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 657A0C441C8016250053576B /* ScanViewController.m */; };
 		657A0C481C801DA50053576B /* MessageListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 657A0C471C801DA50053576B /* MessageListTableViewController.m */; };
 		657A0C4B1C801E010053576B /* MessageMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 657A0C4A1C801E010053576B /* MessageMapViewController.m */; };
+		65B7CFD61C94F8A6000EEAE3 /* ReplyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B7CFD51C94F8A6000EEAE3 /* ReplyViewController.m */; };
+		65B7CFD91C94F964000EEAE3 /* ReplyTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B7CFD81C94F964000EEAE3 /* ReplyTableViewController.m */; };
+		65B7CFDC1C94FB88000EEAE3 /* MessageTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B7CFDB1C94FB88000EEAE3 /* MessageTableViewCell.m */; };
+		65B7CFDF1C94FBB9000EEAE3 /* ReplyTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65B7CFDE1C94FBB9000EEAE3 /* ReplyTableViewCell.m */; };
 		65C0FB9C1C76564300B9183D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C0FB9B1C76564300B9183D /* main.m */; };
 		65C0FB9F1C76564300B9183D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C0FB9E1C76564300B9183D /* AppDelegate.m */; };
 		65C0FBA81C76564300B9183D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65C0FBA61C76564300B9183D /* Main.storyboard */; };
@@ -55,6 +59,14 @@
 		657A0C471C801DA50053576B /* MessageListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageListTableViewController.m; sourceTree = "<group>"; };
 		657A0C491C801E010053576B /* MessageMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageMapViewController.h; sourceTree = "<group>"; };
 		657A0C4A1C801E010053576B /* MessageMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageMapViewController.m; sourceTree = "<group>"; };
+		65B7CFD41C94F8A6000EEAE3 /* ReplyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplyViewController.h; sourceTree = "<group>"; };
+		65B7CFD51C94F8A6000EEAE3 /* ReplyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReplyViewController.m; sourceTree = "<group>"; };
+		65B7CFD71C94F964000EEAE3 /* ReplyTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplyTableViewController.h; sourceTree = "<group>"; };
+		65B7CFD81C94F964000EEAE3 /* ReplyTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReplyTableViewController.m; sourceTree = "<group>"; };
+		65B7CFDA1C94FB88000EEAE3 /* MessageTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageTableViewCell.h; sourceTree = "<group>"; };
+		65B7CFDB1C94FB88000EEAE3 /* MessageTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTableViewCell.m; sourceTree = "<group>"; };
+		65B7CFDD1C94FBB9000EEAE3 /* ReplyTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplyTableViewCell.h; sourceTree = "<group>"; };
+		65B7CFDE1C94FBB9000EEAE3 /* ReplyTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReplyTableViewCell.m; sourceTree = "<group>"; };
 		65C0FB971C76564300B9183D /* BulletinBoard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BulletinBoard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		65C0FB9B1C76564300B9183D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		65C0FB9D1C76564300B9183D /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -158,6 +170,14 @@
 				657A0C4A1C801E010053576B /* MessageMapViewController.m */,
 				6503A5C71C86285500ED99E1 /* LoginViewController.h */,
 				6503A5C81C86285500ED99E1 /* LoginViewController.m */,
+				65B7CFD41C94F8A6000EEAE3 /* ReplyViewController.h */,
+				65B7CFD51C94F8A6000EEAE3 /* ReplyViewController.m */,
+				65B7CFD71C94F964000EEAE3 /* ReplyTableViewController.h */,
+				65B7CFD81C94F964000EEAE3 /* ReplyTableViewController.m */,
+				65B7CFDA1C94FB88000EEAE3 /* MessageTableViewCell.h */,
+				65B7CFDB1C94FB88000EEAE3 /* MessageTableViewCell.m */,
+				65B7CFDD1C94FBB9000EEAE3 /* ReplyTableViewCell.h */,
+				65B7CFDE1C94FBB9000EEAE3 /* ReplyTableViewCell.m */,
 			);
 			path = BulletinBoard;
 			sourceTree = "<group>";
@@ -319,7 +339,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65B7CFD91C94F964000EEAE3 /* ReplyTableViewController.m in Sources */,
 				65C0FB9F1C76564300B9183D /* AppDelegate.m in Sources */,
+				65B7CFDC1C94FB88000EEAE3 /* MessageTableViewCell.m in Sources */,
+				65B7CFD61C94F8A6000EEAE3 /* ReplyViewController.m in Sources */,
 				65C0FBD51C7F522E00B9183D /* ConfirmViewController.m in Sources */,
 				6503A5C61C86283A00ED99E1 /* NSData+CommonCrypto.m in Sources */,
 				65C0FBDA1C7F587300B9183D /* Message.m in Sources */,
@@ -330,6 +353,7 @@
 				6503A5C91C86285500ED99E1 /* LoginViewController.m in Sources */,
 				657A0C481C801DA50053576B /* MessageListTableViewController.m in Sources */,
 				65C0FBD21C7F4FED00B9183D /* PostViewController.m in Sources */,
+				65B7CFDF1C94FBB9000EEAE3 /* ReplyTableViewCell.m in Sources */,
 				65C0FBDD1C7F91CA00B9183D /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

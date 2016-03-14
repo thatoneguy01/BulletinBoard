@@ -1,22 +1,27 @@
 //
-//  MessageListTableViewController.m
+//  ReplyTableViewController.m
 //  BulletinBoard
 //
-//  Created by Daniel Scott on 2/26/16.
+//  Created by Daniel Scott on 3/12/16.
 //  Copyright © 2016 Not Quite Human. All rights reserved.
 //
 
-#import "MessageListTableViewController.h"
+#import "ReplyTableViewController.h"
 
-@interface MessageListTableViewController ()
+@interface ReplyTableViewController ()
 
 @end
 
-@implementation MessageListTableViewController
+@implementation ReplyTableViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // Uncomment the following line to preserve selection between presentations.
+    // self.clearsSelectionOnViewWillAppear = NO;
+    
+    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
+    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -27,20 +32,24 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
+#warning Incomplete implementation, return the number of sections
+    return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _messages.count;
+#warning Incomplete implementation, return the number of rows
+    return 0;
 }
 
+/*
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"mCell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
     
     // Configure the cell...
     
     return cell;
 }
+*/
 
 /*
 // Override to support conditional editing of the table view.

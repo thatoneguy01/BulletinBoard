@@ -10,4 +10,6 @@
 
 @interface MessageMapViewController : UIViewController
 
+@property (strong, nonatomic) NSArray* messages;
+
 @end

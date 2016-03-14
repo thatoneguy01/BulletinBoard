@@ -17,7 +17,17 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    if (![defaults boolForKey:@"loggedIn"]) {
+        self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
+        
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+        
+        UIViewController *viewController = [storyboard instantiateViewControllerWithIdentifier:@"login"];
+        
+        self.window.rootViewController = viewController;
+        [self.window makeKeyAndVisible];
+    }
     return YES;
 }
 

@@ -7,12 +7,16 @@
 //
 
 #import "ScanViewController.h"
+#import "Message.h"
+#import "MessageListTableViewController.h"
+#import "MessageMapViewController.h"
 
 @interface ScanViewController ()
 
 @property (strong, nonatomic) IBOutlet UISegmentedControl* modeSelector;
 @property (strong, nonatomic) IBOutlet UIView* mapContainer;
 @property (strong, nonatomic) IBOutlet UIView* listContainer;
+@property (strong, nonatomic) NSMutableArray* messages;
 
 @end
 
@@ -31,7 +35,11 @@
     NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
     NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         //process responce
+        NSError* jsonError;
+        NSDictionary* messages = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+        _messages = [messages objectForKey:@"objects"];
     }];
+    [getTask resume];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -57,6 +65,14 @@
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
     NSString* identifier = segue.identifier;
+    if ([identifier isEqualToString:@"mList"]) {
+        MessageListTableViewController* listView = segue.destinationViewController;
+        listView.messages = _messages;
+    }
+    else if ([identifier isEqualToString:@"mMap"]) {
+        MessageMapViewController* mapView = segue.destinationViewController;
+        mapView.messages = _messages;
+    }
 }
 
 @end

@@ -10,6 +10,6 @@
 
 @interface MessageListTableViewController : UITableViewController
 
-@property(strong, nonatomic) NSMutableArray* messages;
+@property(strong, nonatomic) NSArray* messages;
 
 @end
