@@ -2,27 +2,27 @@ package com.example.helloendpoints;
 
 public class Account {
 
-	public String id;
+	public int id;
 	public String username;
-	public String hashedPass;
+	public String hashedPassword;
 	public String salt;
 	public String clientID;
 	public String social;
 	
-	public Account(String username) {
-		this.id = "";
+	public Account(String username, String hashedPassword, String salt) {
+		this.id = Messages.getUniqueAccountID();
 		this.username = username;
-		this.hashedPass = "";
-		this.salt = "";
+		this.hashedPassword = hashedPassword;
+		this.salt = salt;
 		this.clientID = "";
 		this.social = "";
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -34,12 +34,12 @@ public class Account {
 		this.username = username;
 	}
 
-	public String getHashedPass() {
-		return hashedPass;
+	public String getHashedPassword() {
+		return hashedPassword;
 	}
 
-	public void setHashedPass(String hashedPass) {
-		this.hashedPass = hashedPass;
+	public void setHashedPassword(String hashedPassword) {
+		this.hashedPassword = hashedPassword;
 	}
 
 	public String getSalt() {

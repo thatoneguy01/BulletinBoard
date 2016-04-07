@@ -5,37 +5,35 @@ import java.util.Date;
 
 public class Message {
 
-	public String id;
+	public int id;
 	public String message;
 	public String poster;
 	public int score;
-	public String location; //TODO change to whatever location is represented as
-	public boolean viewable;
+	public double latitude;
+	public double longitude;
+	public int groupId;
 	public Date time;
 	
-	public Message() {
-		new Message("", "");
+	public Message(String message, String poster, double latitude, double longitude) {		
+		new Message(message, poster, latitude, longitude, -1);
 	}
 	
-	public Message(String message, String poster) {		
-		new Message(message, poster, true);
-	}
-	
-	public Message(String message, String poster, boolean viewable) {
-		this.id = ""; //TODO randomly generate id
+	public Message(String message, String poster, double latitude, double longitude, int groupId) {
+		this.id = Messages.getUniqueMessageId();
 		this.message = message;
 		this.poster = poster;
 		this.score = 0;
-		this.location = ""; //TODO handle location
-		this.viewable = viewable;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.groupId = groupId;
 		this.time = Calendar.getInstance().getTime();
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -63,20 +61,28 @@ public class Message {
 		this.score = score;
 	}
 
-	public String getLocation() {
-		return location;
+	public double getLatitude() {
+		return latitude;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setLatitude(double latitude) {
+		this.latitude = latitude;
 	}
 
-	public boolean isViewable() {
-		return viewable;
+	public double getLongitude() {
+		return longitude;
 	}
 
-	public void setViewable(boolean viewable) {
-		this.viewable = viewable;
+	public void setLongitude(double longitude) {
+		this.longitude = longitude;
+	}
+
+	public int getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(int groupId) {
+		this.groupId = groupId;
 	}
 
 	public Date getTime() {

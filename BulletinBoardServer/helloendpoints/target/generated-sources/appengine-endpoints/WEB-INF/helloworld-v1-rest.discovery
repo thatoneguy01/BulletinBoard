@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/8_3woY4rpMhME78m3eSAoQUUHsU\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/jA2ut1Ii-ctPQAIkngRYe8A0_gA\"",
  "discoveryVersion": "v1",
  "id": "helloworld:v1",
  "name": "helloworld",
@@ -11,10 +11,10 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rest",
- "baseUrl": "https://79146577690-aocj893nb0msh2s4ok21a1iljabpmj5p.apps.googleusercontent.com.appspot.com/_ah/api/helloworld/v1/",
- "basePath": "/_ah/api/helloworld/v1/",
- "rootUrl": "https://79146577690-aocj893nb0msh2s4ok21a1iljabpmj5p.apps.googleusercontent.com.appspot.com/_ah/api/",
- "servicePath": "helloworld/v1/",
+ "baseUrl": "https://${app.id}.appspot.com/_ah/api/helloworld/v1/messages/",
+ "basePath": "/_ah/api/helloworld/v1/messages/",
+ "rootUrl": "https://${app.id}.appspot.com/_ah/api/",
+ "servicePath": "helloworld/v1/messages/",
  "batchPath": "batch",
  "parameters": {
   "alt": {
@@ -71,27 +71,6 @@
   }
  },
  "schemas": {
-  "HelloGreeting": {
-   "id": "HelloGreeting",
-   "type": "object",
-   "properties": {
-    "message": {
-     "type": "string"
-    }
-   }
-  },
-  "HelloGreetingCollection": {
-   "id": "HelloGreetingCollection",
-   "type": "object",
-   "properties": {
-    "items": {
-     "type": "array",
-     "items": {
-      "$ref": "HelloGreeting"
-     }
-    }
-   }
-  },
   "Message": {
    "id": "Message",
    "type": "object",
@@ -132,12 +111,168 @@
      }
     }
    }
+  },
+  "StringCollection": {
+   "id": "StringCollection",
+   "type": "object",
+   "properties": {
+    "items": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    }
+   }
   }
  },
  "methods": {
-  "getMessages": {
-   "id": "helloworld.getMessages",
-   "path": "messagecollection",
+  "checkAccount": {
+   "id": "helloworld.checkAccount",
+   "path": "accountExists",
+   "httpMethod": "GET",
+   "parameters": {
+    "username": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    }
+   },
+   "parameterOrder": [
+    "username"
+   ],
+   "response": {
+    "$ref": "StringCollection"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "checkPassword": {
+   "id": "helloworld.checkPassword",
+   "path": "checkPassword",
+   "httpMethod": "GET",
+   "parameters": {
+    "hashedPassword": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    },
+    "username": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    }
+   },
+   "parameterOrder": [
+    "hashedPassword",
+    "username"
+   ],
+   "response": {
+    "$ref": "StringCollection"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "checkSocialLogin": {
+   "id": "helloworld.checkSocialLogin",
+   "path": "checkSocialLogin",
+   "httpMethod": "GET",
+   "parameters": {
+    "token": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    },
+    "username": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    }
+   },
+   "parameterOrder": [
+    "token",
+    "username"
+   ],
+   "response": {
+    "$ref": "StringCollection"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "createAccount": {
+   "id": "helloworld.createAccount",
+   "path": "createAccount",
+   "httpMethod": "POST",
+   "parameters": {
+    "hashedPassword": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    },
+    "salt": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    },
+    "username": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    }
+   },
+   "parameterOrder": [
+    "hashedPassword",
+    "salt",
+    "username"
+   ],
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "createMessage": {
+   "id": "helloworld.createMessage",
+   "path": "createMessage",
+   "httpMethod": "POST",
+   "request": {
+    "$ref": "Message",
+    "parameterName": "resource"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "createSocialAccount": {
+   "id": "helloworld.createSocialAccount",
+   "path": "createSocialAccount",
+   "httpMethod": "POST",
+   "parameters": {
+    "token": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    },
+    "username": {
+     "type": "string",
+     "required": true,
+     "location": "query"
+    }
+   },
+   "parameterOrder": [
+    "token",
+    "username"
+   ],
+   "response": {
+    "$ref": "StringCollection"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "getAllMessages": {
+   "id": "helloworld.getAllMessages",
+   "path": "getAllMessages",
    "httpMethod": "GET",
    "response": {
     "$ref": "MessageCollection"
@@ -145,82 +280,17 @@
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"
    ]
-  }
- },
- "resources": {
-  "greetings": {
-   "methods": {
-    "authed": {
-     "id": "helloworld.greetings.authed",
-     "path": "hellogreeting/authed",
-     "httpMethod": "POST",
-     "response": {
-      "$ref": "HelloGreeting"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "getGreeting": {
-     "id": "helloworld.greetings.getGreeting",
-     "path": "hellogreeting/{id}",
-     "httpMethod": "GET",
-     "parameters": {
-      "id": {
-       "type": "integer",
-       "required": true,
-       "format": "int32",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "id"
-     ],
-     "response": {
-      "$ref": "HelloGreeting"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "listGreeting": {
-     "id": "helloworld.greetings.listGreeting",
-     "path": "hellogreeting",
-     "httpMethod": "GET",
-     "response": {
-      "$ref": "HelloGreetingCollection"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "multiply": {
-     "id": "helloworld.greetings.multiply",
-     "path": "hellogreeting/{times}",
-     "httpMethod": "POST",
-     "parameters": {
-      "times": {
-       "type": "integer",
-       "required": true,
-       "format": "int32",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "times"
-     ],
-     "request": {
-      "$ref": "HelloGreeting",
-      "parameterName": "resource"
-     },
-     "response": {
-      "$ref": "HelloGreeting"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    }
-   }
+  },
+  "getFirst20Messages": {
+   "id": "helloworld.getFirst20Messages",
+   "path": "getFirst20Messages",
+   "httpMethod": "GET",
+   "response": {
+    "$ref": "MessageCollection"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
   }
  }
 }
