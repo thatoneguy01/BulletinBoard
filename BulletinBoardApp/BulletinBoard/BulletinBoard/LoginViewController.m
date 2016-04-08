@@ -51,6 +51,7 @@
                                             }}];
         [alert addAction:defaultAction];
         [self presentViewController:alert animated:YES completion:nil];
+        return;
     }
     NSString* urlString = [NSString stringWithFormat:@"CHECK USERNAME URL?username=%@", _usernameField.text];
     NSURL* url = [NSURL URLWithString:urlString];
