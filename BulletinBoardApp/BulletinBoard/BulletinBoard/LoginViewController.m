@@ -7,12 +7,18 @@
 //
 
 #import "LoginViewController.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKLoginKit/FBSDKLoginKit.h>
+
 
 @interface LoginViewController ()
 
 @property (strong, nonatomic) IBOutlet UITextField* usernameField;
 @property (strong, nonatomic) IBOutlet UITextField* passwordField;
 @property (strong, nonatomic) NSString* salt;
+@property (strong, nonatomic) IBOutlet UIView* loginButtonContainer;
+@property (strong, nonatomic) IBOutlet FBSDKLoginButton* loginButton;
+
 
 @end
 
@@ -21,6 +27,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    _loginButton = [[FBSDKLoginButton alloc] init];
+    _loginButton.readPermissions = @[@"email"];
+    _loginButton.frame = CGRectMake(0, 0, _loginButtonContainer.frame.size.width, _loginButtonContainer.frame.size.height);
+    [_loginButtonContainer addSubview:_loginButton];
 }
 
 - (void)didReceiveMemoryWarning {

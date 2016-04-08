@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		6503A5C61C86283A00ED99E1 /* NSData+CommonCrypto.m in Sources */ = {isa = PBXBuildFile; fileRef = 6503A5C51C86283A00ED99E1 /* NSData+CommonCrypto.m */; };
 		6503A5C91C86285500ED99E1 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6503A5C81C86285500ED99E1 /* LoginViewController.m */; };
+		6540DC6E1CB753C00077F0A8 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6540DC6B1CB753C00077F0A8 /* FBSDKCoreKit.framework */; };
+		6540DC6F1CB753C00077F0A8 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6540DC6C1CB753C00077F0A8 /* FBSDKLoginKit.framework */; };
+		6540DC701CB753C00077F0A8 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6540DC6D1CB753C00077F0A8 /* FBSDKShareKit.framework */; };
 		657A0C451C8016250053576B /* ScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 657A0C441C8016250053576B /* ScanViewController.m */; };
 		657A0C481C801DA50053576B /* MessageListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 657A0C471C801DA50053576B /* MessageListTableViewController.m */; };
 		657A0C4B1C801E010053576B /* MessageMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 657A0C4A1C801E010053576B /* MessageMapViewController.m */; };
@@ -53,6 +56,9 @@
 		6503A5C51C86283A00ED99E1 /* NSData+CommonCrypto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+CommonCrypto.m"; sourceTree = "<group>"; };
 		6503A5C71C86285500ED99E1 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		6503A5C81C86285500ED99E1 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		6540DC6B1CB753C00077F0A8 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		6540DC6C1CB753C00077F0A8 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		6540DC6D1CB753C00077F0A8 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
 		657A0C431C8016250053576B /* ScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanViewController.h; sourceTree = "<group>"; };
 		657A0C441C8016250053576B /* ScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
 		657A0C461C801DA50053576B /* MessageListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListTableViewController.h; sourceTree = "<group>"; };
@@ -99,7 +105,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6540DC701CB753C00077F0A8 /* FBSDKShareKit.framework in Frameworks */,
 				65C0FBD71C7F541300B9183D /* MapKit.framework in Frameworks */,
+				6540DC6E1CB753C00077F0A8 /* FBSDKCoreKit.framework in Frameworks */,
+				6540DC6F1CB753C00077F0A8 /* FBSDKLoginKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,9 +129,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6540DC6A1CB753A60077F0A8 /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				6540DC6B1CB753C00077F0A8 /* FBSDKCoreKit.framework */,
+				6540DC6C1CB753C00077F0A8 /* FBSDKLoginKit.framework */,
+				6540DC6D1CB753C00077F0A8 /* FBSDKShareKit.framework */,
+			);
+			name = Framework;
+			sourceTree = "<group>";
+		};
 		65C0FB8E1C76564300B9183D = {
 			isa = PBXGroup;
 			children = (
+				6540DC6A1CB753A60077F0A8 /* Framework */,
 				65C0FBD61C7F541300B9183D /* MapKit.framework */,
 				65C0FB991C76564300B9183D /* BulletinBoard */,
 				65C0FBB61C76564300B9183D /* BulletinBoardTests */,
@@ -495,6 +515,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = /Users/Daniel/Documents/FacebookSDK;
 				INFOPLIST_FILE = BulletinBoard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nqh.BulletinBoard;
@@ -506,6 +527,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = /Users/Daniel/Documents/FacebookSDK;
 				INFOPLIST_FILE = BulletinBoard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nqh.BulletinBoard;
