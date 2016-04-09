@@ -2,6 +2,7 @@ package com.example.helloendpoints;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.*;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -207,10 +208,13 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "createGroup", httpMethod = "get", path = "messages/createGroup")
-	public int createGroup(@Named("groupName") String groupName) {
+	public Map<String, Integer> createGroup(@Named("groupName") String groupName) {
 		Group group = new Group(groupName);
 		groups.add(group);
-		return group.getId();
+		HashMap<String, Integer> toReturn = new HashMap<String, Integer>();
+		toReturn.put("groupId", new Integer(group.getId()));
+		return toReturn;
+		//return group.getId();
 	}
 	
 	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "messages/addToGroup")
