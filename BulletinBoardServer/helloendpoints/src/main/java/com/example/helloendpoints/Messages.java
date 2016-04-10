@@ -1,8 +1,17 @@
 package com.example.helloendpoints;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
+
+import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -26,6 +35,7 @@ public class Messages {
 	public static ArrayList<Reply> replies = new ArrayList<Reply>();
 	public static ArrayList<Group> groups = new ArrayList<Group>();
 	public static ArrayList<GroupMembership> groupMemberships = new ArrayList<GroupMembership>();
+	public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	
 	public static int getUniqueMessageId() {
 		int largest = -1;
@@ -141,15 +151,43 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "checkPassword", httpMethod = "get", path = "messages/checkPassword")
-	public List<String> checkPassword(@Named("username") String username, @Named("hashedPassword") String hashedPassword) {
-		List<String> result = new ArrayList<String>();
+	public Map<String, Boolean> checkPassword(@Named("username") String username, @Named("password") String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		/*List<String> result = new ArrayList<String>();
 		Account account = getAccount(username);
 		if (account.getHashedPassword().equals(hashedPassword)) {
 			result.add("true");
 		} else {
 			result.add("false");
 		}
-		return result;
+		return result;*/
+
+		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
+		Query q = new Query("Message").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		if (results.isEmpty()) {
+			Map<String, Boolean> toReturn = new HashMap<>();
+			toReturn.put("accepted", new Boolean(false));
+			return toReturn;
+		}
+		else {
+			Account account = new Account(results.get(0));
+			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+			String saltPassword = account.salt + password;
+			messageDigest.update(saltPassword.getBytes("UTF-8"));
+			byte[] digest = messageDigest.digest();
+			String hashedPassword = new String(digest);
+			if (hashedPassword.equals(account.hashedPassword)) {
+				Map<String, Boolean> toReturn = new HashMap<>();
+				toReturn.put("accepted", new Boolean(true));
+				return toReturn;
+			}
+			else
+			{
+				Map<String, Boolean> toReturn = new HashMap<>();
+				toReturn.put("accepted", new Boolean(false));
+				return toReturn;
+			}
+		}
 	}
 	
 	private Account getAccount(String username) {
@@ -162,8 +200,8 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "createAccount", httpMethod = "get", path = "messages/createAccount")
-	public void createAccount(@Named("username") String username, @Named("hashedPassword") String hashedPassword, @Named("salt") String salt) throws BadRequestException {
-		boolean taken = false;
+	public Map<String, Boolean> createAccount(@Named("username") String username, @Named("password") String password) {
+		/*boolean taken = false;
 		for (Account account : accounts) {
 			if (account.getUsername().equals(username)) {
 				taken = true;
@@ -174,18 +212,54 @@ public class Messages {
 			accounts.add(account);
 		} else {
 			throw new BadRequestException("username already exists");
+		}*/
+		try {
+			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+			SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+			byte[] bytes = new byte[64];
+			secureRandom.nextBytes(bytes);
+			String salt = new String(bytes);
+			String saltPassword = salt + password;
+			messageDigest.update(saltPassword.getBytes("UTF-8"));
+			byte[] digest = messageDigest.digest();
+			Account account = new Account(username, new String(digest), salt);
+			datastore.put(account.toEntity());
+
+			Map<String, Boolean> toReturn = new HashMap<>();
+			toReturn.put("succeeded", new Boolean(true));
+			return toReturn;
+		}
+		catch (Exception e) {
+			Map<String, Boolean> toReturn = new HashMap<>();
+			toReturn.put("succeeded", new Boolean(false));
+			return toReturn;
 		}
 	}
 	
 	@ApiMethod(name = "checkAccount", httpMethod = "get", path = "messages/accountExists")
-	public List<String> accountExists(@Named("username") String username) {
-		List<String> result = new ArrayList<String>();
+	public Map<String, Boolean> accountExists(@Named("username") String username) {
+		/*List<String> result = new ArrayList<String>();
 		for (Account account : accounts) {
 			if (account.getUsername().equals(username)) {
 				result.add(account.getSalt());
 			}
 		}
-		return result;
+		return result;*/
+
+		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
+		Query q = new Query("Account").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		Map<String, Boolean> toReturn = new HashMap<>();
+		if (results.isEmpty())
+		{
+			toReturn.put("exists", new Boolean(false));
+			return toReturn;
+		}
+		else
+		{
+			toReturn.put("exists", new Boolean(true));
+			return toReturn;
+		}
 	}
 	
 	@ApiMethod(name = "createSocialAccount", httpMethod = "get", path = "messages/createSocialAccount")
@@ -193,6 +267,18 @@ public class Messages {
 		//TODO 200 = success
 		// 400 = failure com.google.api.server.spi.response.BadRequestException
 		return null;
+	}
+
+	@ApiMethod(name = "listAccounts", httpMethod = "get", path = "accounts/list")
+	public List<Account> getAllAccounts() {
+		Query q = new Query("Account").addSort("username", Query.SortDirection.ASCENDING);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		List<Account> accounts = new LinkedList<>();
+		if (results.isEmpty())
+			return new LinkedList<>();
+		for (Entity e : results)
+			accounts.add(new Account(e));
+		return accounts;
 	}
 	
 	@ApiMethod(name = "checkSocialLogin", httpMethod = "get", path = "messages/checkSocialLogin")
