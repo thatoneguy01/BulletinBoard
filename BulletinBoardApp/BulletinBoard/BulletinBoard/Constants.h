@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define API_DOMAIN "bulletinboard-1230.appspot.com/_ah/api/helloworld/v1/"
+#define API_DOMAIN @"https://bulletinboard-1230.appspot.com/_ah/api/helloworld/v2/"
 
 @interface Constants : NSObject <NSCoding>
 

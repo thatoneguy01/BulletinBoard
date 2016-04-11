@@ -21,7 +21,7 @@
     // Override point for customization after application launch.
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
-    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    /*NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     if (![defaults boolForKey:@"loggedIn"]) {
         self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
         
@@ -31,7 +31,7 @@
         
         self.window.rootViewController = viewController;
         [self.window makeKeyAndVisible];
-    }
+    }*/
     return YES;
 }
 

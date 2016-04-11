@@ -23,7 +23,7 @@ import com.google.api.server.spi.response.BadRequestException;
  */
 @Api(
 		name = "helloworld",
-		version = "v1",
+		version = "v2",
 		scopes = {Constants.EMAIL_SCOPE},
 		clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID, Constants.API_EXPLORER_CLIENT_ID},
 		audiences = {Constants.ANDROID_AUDIENCE}
@@ -276,7 +276,7 @@ public class Messages {
 	}
 
 	@ApiMethod(name = "checkSocial", httpMethod = "get", path = "accounts/socialAccountExists")
-	public Map socialExists(@Named("username") long userId) {
+	public Map socialExists(@Named("userId") long userId) {
 		Filter filter = new FilterPredicate("social", FilterOperator.EQUAL, userId);
 		Query q = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
