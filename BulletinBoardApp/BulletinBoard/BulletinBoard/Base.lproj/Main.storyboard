@@ -614,9 +614,13 @@
                                 <rect key="frame" x="353" y="316" width="57" height="30"/>
                                 <state key="normal" title="Register"/>
                             </button>
-                            <view contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d7z-oR-PcO">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d7z-oR-PcO">
                                 <rect key="frame" x="180" y="383" width="240" height="54"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="8Ah-Bt-PjJ"/>
+                                    <constraint firstAttribute="height" constant="54" id="ezW-Ng-NGw"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -632,6 +636,7 @@
                             <constraint firstItem="4RN-N1-O5e" firstAttribute="width" secondItem="OXk-Yl-isE" secondAttribute="width" id="OPw-ct-XfL"/>
                             <constraint firstItem="8Be-jE-pFN" firstAttribute="top" secondItem="6cM-dJ-T19" secondAttribute="bottom" constant="8" id="PPg-9S-PEx"/>
                             <constraint firstItem="4RN-N1-O5e" firstAttribute="leading" secondItem="H9z-JV-en1" secondAttribute="trailing" constant="8" id="WHb-HP-BM2"/>
+                            <constraint firstItem="d7z-oR-PcO" firstAttribute="top" secondItem="DCM-B3-Liv" secondAttribute="bottom" constant="37" id="cfb-ro-cCq"/>
                             <constraint firstAttribute="leadingMargin" secondItem="8Be-jE-pFN" secondAttribute="leading" id="hCb-sV-sel"/>
                             <constraint firstItem="d7z-oR-PcO" firstAttribute="centerX" secondItem="FYW-Dj-FH0" secondAttribute="centerX" id="nCg-U6-vuF"/>
                             <constraint firstItem="DCM-B3-Liv" firstAttribute="top" secondItem="4RN-N1-O5e" secondAttribute="bottom" constant="25" id="paW-iE-cCi"/>

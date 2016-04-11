@@ -34,7 +34,7 @@
     //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
     NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
     NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        //process responce
+        //process response
         NSError* jsonError;
         NSDictionary* messages = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
         _messages = [messages objectForKey:@"objects"];

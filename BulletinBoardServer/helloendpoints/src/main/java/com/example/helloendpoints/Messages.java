@@ -47,8 +47,8 @@ public class Messages {
 		return (largest + 1);
 	}
 	
-	public static int getUniqueAccountID() {
-		int largest = -1;
+	public static long getUniqueAccountID() {
+		long largest = -1;
 		for (Account account : accounts) {
 			if (account.getId() > largest) {
 				largest = account.getId();
@@ -103,7 +103,7 @@ public class Messages {
 		return null;
 	}
 	
-	@ApiMethod(name = "replies", httpMethod = "get", path = "messages/replies")
+	@ApiMethod(name = "replies", httpMethod = "get", path = "replies/replies")
 	public List<Reply> replies(@Named("messageId") String messageId) {
 		List<Reply> messageReplies = new ArrayList<Reply>();
 		for (Reply reply : replies) {
@@ -114,7 +114,7 @@ public class Messages {
 		return messageReplies;
 	}
 	
-	@ApiMethod(name = "createReply", httpMethod = "post", path = "messages/createReply")
+	@ApiMethod(name = "createReply", httpMethod = "post", path = "replies/createReply")
 	public void createReply() {
 		//TODO
 	}
@@ -150,7 +150,7 @@ public class Messages {
 		}
 	}
 	
-	@ApiMethod(name = "checkPassword", httpMethod = "get", path = "messages/checkPassword")
+	@ApiMethod(name = "checkPassword", httpMethod = "get", path = "accounts/checkPassword")
 	public Map<String, Boolean> checkPassword(@Named("username") String username, @Named("password") String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		/*List<String> result = new ArrayList<String>();
 		Account account = getAccount(username);
@@ -162,7 +162,7 @@ public class Messages {
 		return result;*/
 
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
-		Query q = new Query("Message").setFilter(filter);
+		Query q = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		if (results.isEmpty()) {
 			Map<String, Boolean> toReturn = new HashMap<>();
@@ -199,8 +199,8 @@ public class Messages {
 		return null;
 	}
 	
-	@ApiMethod(name = "createAccount", httpMethod = "get", path = "messages/createAccount")
-	public Map<String, Boolean> createAccount(@Named("username") String username, @Named("password") String password) {
+	@ApiMethod(name = "createAccount", httpMethod = "get", path = "accounts/createAccount")
+	public Map createAccount(@Named("username") String username, @Named("password") String password) {
 		/*boolean taken = false;
 		for (Account account : accounts) {
 			if (account.getUsername().equals(username)) {
@@ -213,6 +213,15 @@ public class Messages {
 		} else {
 			throw new BadRequestException("username already exists");
 		}*/
+		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
+		Query q = new Query("Account").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		if (!results.isEmpty()) {
+			Map toReturn = new HashMap<>();
+			toReturn.put("succeeded", new Boolean(false));
+			toReturn.put("reason", "username already in use");
+			return toReturn;
+		}
 		try {
 			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
 			SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
@@ -225,18 +234,22 @@ public class Messages {
 			Account account = new Account(username, new String(digest), salt);
 			datastore.put(account.toEntity());
 
-			Map<String, Boolean> toReturn = new HashMap<>();
+			Map toReturn = new HashMap<>();
 			toReturn.put("succeeded", new Boolean(true));
+			toReturn.put("reason", "");
+
 			return toReturn;
 		}
 		catch (Exception e) {
-			Map<String, Boolean> toReturn = new HashMap<>();
+			Map toReturn = new HashMap<>();
 			toReturn.put("succeeded", new Boolean(false));
+			toReturn.put("reason", e.getMessage());
+
 			return toReturn;
 		}
 	}
 	
-	@ApiMethod(name = "checkAccount", httpMethod = "get", path = "messages/accountExists")
+	@ApiMethod(name = "checkAccount", httpMethod = "get", path = "accounts/accountExists")
 	public Map<String, Boolean> accountExists(@Named("username") String username) {
 		/*List<String> result = new ArrayList<String>();
 		for (Account account : accounts) {
@@ -261,12 +274,46 @@ public class Messages {
 			return toReturn;
 		}
 	}
+
+	@ApiMethod(name = "checkSocial", httpMethod = "get", path = "accounts/socialAccountExists")
+	public Map socialExists(@Named("username") long userId) {
+		Filter filter = new FilterPredicate("social", FilterOperator.EQUAL, userId);
+		Query q = new Query("Account").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		Map toReturn = new HashMap<>();
+		if (results.isEmpty())
+		{
+			toReturn.put("exists", new Boolean(false));
+			toReturn.put("username", "");
+			return toReturn;
+		}
+		else
+		{
+			toReturn.put("exists", new Boolean(true));
+			toReturn.put("username", new Account(results.get(0)).username);
+			return toReturn;
+		}
+	}
 	
-	@ApiMethod(name = "createSocialAccount", httpMethod = "get", path = "messages/createSocialAccount")
-	public List<String> createSocialAccount(@Named("username") String username, @Named("token") String token) {
-		//TODO 200 = success
-		// 400 = failure com.google.api.server.spi.response.BadRequestException
-		return null;
+	@ApiMethod(name = "createSocialAccount", httpMethod = "get", path = "accounts/createSocialAccount")
+	public Map createSocialAccount(@Named("username") String username, @Named("token") long token) {
+		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
+		Query q = new Query("Account").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		if (!results.isEmpty()) {
+			Map toReturn = new HashMap<>();
+			toReturn.put("succeeded", new Boolean(false));
+			toReturn.put("reason", "username already in use");
+			return toReturn;
+		}
+		Account account = new Account(username, token);
+		datastore.put(account.toEntity());
+
+		Map toReturn = new HashMap<>();
+		toReturn.put("succeeded", new Boolean(true));
+		toReturn.put("reason", "");
+
+		return toReturn;
 	}
 
 	@ApiMethod(name = "listAccounts", httpMethod = "get", path = "accounts/list")
@@ -281,19 +328,33 @@ public class Messages {
 		return accounts;
 	}
 	
-	@ApiMethod(name = "checkSocialLogin", httpMethod = "get", path = "messages/checkSocialLogin")
-	public List<String> checkSocialLogin(@Named("username") String username, @Named("token") String token) {
-		List<String> result = new ArrayList<String>();
-		Account account = getAccount(username);
-		if (account.getSocial().equals(token)) {
-			result.add("true");
-		} else {
-			result.add("false");
+	@ApiMethod(name = "checkSocialLogin", httpMethod = "get", path = "accounts/checkSocialLogin")
+	public Map checkSocialLogin(@Named("username") String username, @Named("token") long token) {
+		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
+		Query q = new Query("Account").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		if (results.isEmpty()) {
+			Map<String, Boolean> toReturn = new HashMap<>();
+			toReturn.put("accepted", new Boolean(false));
+			return toReturn;
 		}
-		return result;
+		else {
+			Account account = new Account(results.get(0));
+			if (token == account.social) {
+				Map<String, Boolean> toReturn = new HashMap<>();
+				toReturn.put("accepted", new Boolean(true));
+				return toReturn;
+			}
+			else
+			{
+				Map<String, Boolean> toReturn = new HashMap<>();
+				toReturn.put("accepted", new Boolean(false));
+				return toReturn;
+			}
+		}
 	}
 	
-	@ApiMethod(name = "createGroup", httpMethod = "get", path = "messages/createGroup")
+	@ApiMethod(name = "createGroup", httpMethod = "get", path = "groups/createGroup")
 	public Map<String, Integer> createGroup(@Named("groupName") String groupName) {
 		Group group = new Group(groupName);
 		groups.add(group);
@@ -303,12 +364,12 @@ public class Messages {
 		//return group.getId();
 	}
 	
-	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "messages/addToGroup")
+	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/addToGroup")
 	public void addToGroup() {
 		//TODO parse body for list of username strings
 	}
 	
-	@ApiMethod(name = "leaveGroup", httpMethod = "get", path = "messages/leaveGroup")
+	@ApiMethod(name = "leaveGroup", httpMethod = "get", path = "groups/leaveGroup")
 	public void leaveGroup(@Named("username") String username, @Named("groupId") int groupId) {
 		Account account = getAccount(username);
 		for (GroupMembership groupMembership : groupMemberships) {
@@ -328,7 +389,7 @@ public class Messages {
 		return memberGroups;
 	}
 	
-	@ApiMethod(name = "listGroups", httpMethod = "get", path = "messages/listGroups")
+	@ApiMethod(name = "listGroups", httpMethod = "get", path = "groups/listGroups")
 	public List<Group> listGroups(@Named("username") String username) {
 		// just list groupId and groupName
 		//TODO

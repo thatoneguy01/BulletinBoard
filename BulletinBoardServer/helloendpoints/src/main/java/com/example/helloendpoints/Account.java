@@ -7,22 +7,29 @@ import com.google.appengine.api.datastore.Key;
 
 public class Account {
 
-	public int id;
+	public long id;
 	public Key key;
 	public String username;
 	public String hashedPassword;
 	public String salt;
 	public String clientID;
-	public String social;
+	public long social;
 	
 	public Account(String username, String hashedPassword, String salt) {
-		this.id = Messages.getUniqueAccountID();
+		//this.id = Messages.getUniqueAccountID();
 		this.username = username;
 		this.hashedPassword = hashedPassword;
 		this.salt = salt;
 		this.clientID = "";
-		this.social = "";
-		
+		this.social =-1;
+	}
+
+	public Account(String username, long socialId) {
+		this.username = username;
+		this.social = socialId;
+		hashedPassword = null;
+		salt = null;
+		clientID = null;
 	}
 
 	public Account(Entity e) {
@@ -31,9 +38,9 @@ public class Account {
 			this.hashedPassword = (String) e.getProperty("hashedPassword");
 			this.salt = (String) e.getProperty("salt");
 			this.clientID = (String) e.getProperty("clientId");
-			this.social = (String) e.getProperty("social");
-			//this.id = (int) e.getProperty("ID/Name");
-			System.out.println(e.getProperties().toString());
+			this.social = (long) e.getProperty("social");
+			this.key = e.getKey();
+			this.id = this.key.getId();
 		}
 		catch (NullPointerException e1) {
 			e1.printStackTrace();
@@ -50,11 +57,11 @@ public class Account {
 		return e;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -90,11 +97,11 @@ public class Account {
 		this.clientID = clientID;
 	}
 
-	public String getSocial() {
+	public long getSocial() {
 		return social;
 	}
 
-	public void setSocial(String social) {
+	public void setSocial(long social) {
 		this.social = social;
 	}
 }

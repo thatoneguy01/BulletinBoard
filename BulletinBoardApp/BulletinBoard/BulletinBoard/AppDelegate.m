@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "LoginViewController.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 
 @interface AppDelegate ()
@@ -41,6 +42,10 @@
                                                                annotation:annotation
                     ];
     // Add any custom logic here.
+    /*UIStoryboard* storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    LoginViewController* login = (LoginViewController*)[storyboard instantiateViewControllerWithIdentifier:@"login"];
+    [login facebookLoginFinished];*/
+    
     return handled;
 }
 
