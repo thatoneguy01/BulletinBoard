@@ -10,6 +10,7 @@
 #import "ConfirmViewController.h"
 #import "Group.h"
 #import "Constants.h"
+@import CoreLocation;
 
 @interface PostViewController ()
 
@@ -18,6 +19,12 @@
 @property (strong, nonatomic) IBOutlet UITextField* privateGroup;
 @property (strong, nonatomic) IBOutlet UIButton* nextButton;
 @property (strong, nonatomic) NSArray* userGroups;
+@property (strong, nonatomic) IBOutlet UIView* grayView;
+@property (strong, nonatomic) IBOutlet UIView* groupSelectorContainer;
+@property NSNumber* index;
+@property (strong) CLLocationManager* locationManager;
+
+
 //@property (strong, nonatomic) Modal* popController;
 
 @end
@@ -27,7 +34,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    _grayView = [[UIView alloc] initWithFrame:[_groupSelectorContainer bounds]];
+    _grayView.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.5];
+    [_groupSelectorContainer addSubview:_grayView];
     [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)]];
+    
+    //[_locationManager startUpdatingLocation];
+    NSLog(@"Called");
 }
 
 - (void)didReceiveMemoryWarning {
@@ -41,6 +54,7 @@
 
 -(IBAction)togglePrivate:(id)sender {
     if (_privateSwitch.selectedSegmentIndex == 1) {
+        _grayView.hidden = true;
         NSString* username = [[NSUserDefaults standardUserDefaults] objectForKey:@"username"];
         NSString* urlString = [NSString stringWithFormat:@"%@groups/listGroups?username=%@", API_DOMAIN, username];
         NSURL* url = [NSURL URLWithString:urlString];
@@ -59,10 +73,13 @@
                 Group* g = [[Group alloc] initWithDict:dict];
                 [groupList addObject:g];
             }
-            _userGroups = [[NSArray alloc] initWithArray:groupList];
+            _userGroups = [groupList sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
         }
                                      ];
         [getTask resume];
+    }
+    else {
+        _grayView.hidden = false;
     }
 }
 
@@ -72,16 +89,15 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     ConfirmViewController* destination = [segue destinationViewController];
     destination.message = [[Message alloc] initWithMessage:_messageBox.text];
-    destination.message.postingUser = @"test";
+    destination.message.postingUser = [[NSUserDefaults standardUserDefaults] stringForKey:@"username"];
     destination.message.score = 0;
     NSDate * now = [NSDate date];
-    NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
-    [outputFormatter setDateFormat:@"HH:mm:ss"];
-    destination.message.timePosted = [outputFormatter stringFromDate:now];
+    destination.message.timePosted = now;
     if (_privateSwitch.selectedSegmentIndex == 0)
-        destination.message.publicVisable = YES;
-    else
-        destination.message.publicVisable = NO;
+        destination.message.groupId = -1;
+    else {
+        destination.message.groupId = ((Group*)[_userGroups objectAtIndex:[_index longValue]]).groupId;
+        }
 }
 
 @end

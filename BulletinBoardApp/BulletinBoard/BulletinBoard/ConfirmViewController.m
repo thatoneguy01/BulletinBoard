@@ -7,6 +7,8 @@
 //
 
 #import "ConfirmViewController.h"
+#import "Constants.h"
+@import CoreLocation;
 
 @interface ConfirmViewController ()
 
@@ -23,7 +25,7 @@
     MKUserLocation *userLocation = _locationMap.userLocation;
     MKCoordinateRegion region =
     MKCoordinateRegionMakeWithDistance (
-                                        userLocation.location.coordinate, 2000, 2000);
+                                        userLocation.location.coordinate, 1000, 1000);
     [_locationMap setRegion:region animated:NO];
 }
 
@@ -36,8 +38,10 @@
     MKUserLocation* currentLoc = [_locationMap userLocation];
     NSString* lat = [NSString stringWithFormat:@"%f", currentLoc.location.coordinate.latitude];
     NSString* lon = [NSString stringWithFormat:@"%f", currentLoc.location.coordinate.longitude];
-    _message.location = [NSString stringWithFormat:@"%@, %@", lat, lon];
-    NSURL* url = [NSURL URLWithString:@"POST MESSAGE API PATH GOES HERE"];
+    _message.lat = [[NSNumber alloc] initWithDouble:[lat doubleValue]];
+    _message.lon = [[NSNumber alloc] initWithDouble:[lon doubleValue]];
+    NSString* urlString = [NSString stringWithFormat:@"%@messages/createMessage", API_DOMAIN];
+    NSURL* url = [NSURL URLWithString:urlString];
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
@@ -48,7 +52,10 @@
     //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
     NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
     NSURLSessionTask* postTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        //NO-OP
+        if (error)
+            NSLog(@"FAIL");
+        else
+            NSLog(@"NO FAIL");
     }];
     [postTask resume];
     [self dismissViewControllerAnimated:YES completion:nil];

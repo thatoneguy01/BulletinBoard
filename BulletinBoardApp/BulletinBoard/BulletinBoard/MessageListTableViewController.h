@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface MessageListTableViewController : UITableViewController
+@interface MessageListTableViewController : UITableViewController //<>
 
 @property(strong, nonatomic) NSArray* messages;
 

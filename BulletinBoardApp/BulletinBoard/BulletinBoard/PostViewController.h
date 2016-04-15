@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+@import CoreLocation;
 
-@interface PostViewController : UIViewController
+@interface PostViewController : UIViewController <CLLocationManagerDelegate>
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "MessageListTableViewController.h"
+@import CoreLocation;
 
 @interface MessageListTableViewController ()
 
@@ -16,7 +17,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 }
 
 - (void)didReceiveMemoryWarning {

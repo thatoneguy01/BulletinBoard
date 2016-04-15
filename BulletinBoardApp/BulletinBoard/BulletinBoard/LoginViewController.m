@@ -50,11 +50,15 @@
 
 -(void)success {
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-    NSMutableDictionary* build = [[NSMutableDictionary alloc] init];
-    [build setObject:[NSNumber numberWithBool:true] forKey:@"loggedIn"];
-    [build setObject:_usernameField.text forKey:@"username"];
-    NSDictionary* input = [[NSDictionary alloc] initWithDictionary:build];
-    [defaults registerDefaults:input];
+    //NSMutableDictionary* build = [[NSMutableDictionary alloc] init];
+    [defaults setObject:[NSNumber numberWithBool:true] forKey:@"loggedIn"];
+    [defaults setObject:_usernameField.text forKey:@"username"];
+    //NSDictionary* input = [[NSDictionary alloc] initWithDictionary:build];
+    //[defaults registerDefaults:input];
+    BOOL saved = [defaults synchronize];
+    if (!saved) {
+        @throw [[NSException alloc] initWithName:@"Syncronize failed" reason:nil userInfo:nil];
+    }
     [self presentViewController:[[self storyboard] instantiateViewControllerWithIdentifier:@"entry"] animated:YES completion:nil];
 }
 
@@ -178,7 +182,7 @@
         NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
         NSNumber* ack = [responseContent objectForKey:@"exists"];
         if ([ack boolValue]) {
-            NSString* urlString = [NSString stringWithFormat:@"%@accounts/createAccount?username=%@&password=%@", API_DOMAIN, _usernameField.text, _passwordField.text];
+            NSString* urlString = [NSString stringWithFormat:@"%@accounts/checkPassword?username=%@&password=%@", API_DOMAIN, _usernameField.text, _passwordField.text];
             NSURL* url = [NSURL URLWithString:urlString];
             NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
             [request setHTTPMethod:@"GET"];
@@ -231,7 +235,7 @@
         NSError* jsonError;
         NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
         if ((bool)[responseContent objectForKey:@"exists"]) {
-            NSString* urlString = [NSString stringWithFormat:@"%@accounts/checkPassword?username=%@&password=%@", API_DOMAIN, _usernameField.text, _passwordField.text];
+            NSString* urlString = [NSString stringWithFormat:@"%@accounts/createAccount?username=%@&password=%@", API_DOMAIN, _usernameField.text, _passwordField.text];
             NSURL* url = [NSURL URLWithString:urlString];
             NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
             [request setHTTPMethod:@"GET"];

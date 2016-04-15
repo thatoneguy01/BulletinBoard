@@ -21,7 +21,7 @@ public class Group {
 		try {
 			this.id = e.getKey().getId();
 			this.name = (String)e.getProperty("name");
-			this.time = (Date)e.getProperty("time");
+			this.time = (Date)e.getProperty("timePosted");
 		}
 		catch (Exception e1) {
 			e1.printStackTrace();
@@ -31,7 +31,7 @@ public class Group {
 	public Entity toEntity() {
 		Entity e = new Entity("Group");
 		e.setProperty("name", this.name);
-		e.setProperty("time", this.time);
+		e.setProperty("timePosted", this.time);
 		return e;
 	}
 

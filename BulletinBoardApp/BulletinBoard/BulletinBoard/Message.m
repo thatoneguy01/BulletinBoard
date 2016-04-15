@@ -19,13 +19,19 @@
 }
 
 -(NSDictionary*)toDict {
+    NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
+    [outputFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssz"];
+    NSString* time = [outputFormatter stringFromDate:_timePosted];
+    NSLog(time);
     NSDictionary* temp = [[NSDictionary alloc] initWithObjectsAndKeys:
                           _message, @"message",
                           _postingUser, @"postingUser",
-                          _location, @"location",
+                          _lat, @"latitude",
+                          _lon, @"longitude",
                           _score, @"score",
-                          _publicVisable, @"publicVisable",
-                          _timePosted, @"timePosted", nil];
+                          _groupId, @"groupId",
+                          time, @"timePosted",
+                          0, "id", nil];
     return temp;
 }
 

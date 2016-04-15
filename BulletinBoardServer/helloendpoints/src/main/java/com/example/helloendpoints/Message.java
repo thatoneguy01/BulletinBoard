@@ -1,35 +1,79 @@
 package com.example.helloendpoints;
 
-import java.util.Calendar;
+import com.google.appengine.api.datastore.Entity;
+
 import java.util.Date;
 
 public class Message {
 
-	public int id;
+	public long id;
 	public String message;
-	public String poster;
+	public String postingUser;
 	public int score;
 	public double latitude;
 	public double longitude;
-	public int groupId;
-	public Date time;
-	
-	public Message(String message, String poster, double latitude, double longitude) {		
-		new Message(message, poster, latitude, longitude, -1);
+	public long groupId;
+	public Date timePosted;
+
+	public Message() {
+
 	}
 	
-	public Message(String message, String poster, double latitude, double longitude, int groupId) {
-		this.id = Messages.getUniqueMessageId();
+	public Message(String message, String postingUser, double latitude, double longitude) {
+		new Message(message, postingUser, latitude, longitude, -1, new Date());
+	}
+	
+	public Message(String message, String postingUser, double latitude, double longitude, long groupId, Date timePosted) {
+		//this.id = Messages.getUniqueMessageId();
 		this.message = message;
-		this.poster = poster;
+		this.postingUser = postingUser;
 		this.score = 0;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.groupId = groupId;
-		this.time = Calendar.getInstance().getTime();
+		this.timePosted = timePosted;
 	}
 
-	public int getId() {
+	public Message(long id, String message, String postingUser, int score, double latitude, double longitude, long groupId, Date timePosted) {
+		this.id = id;
+		this.message = message;
+		this.postingUser = postingUser;
+		this.score = score;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.groupId = groupId;
+		this.timePosted = timePosted;
+	}
+
+	public Message(Entity e) {
+		try {
+			this.id = e.getKey().getId();
+			this.message = (String)e.getProperty("message");
+			this.postingUser = (String)e.getProperty("postingUser");
+			this.score = (int)e.getProperty("score");
+			this.latitude = (double)e.getProperty("latitude");
+			this.longitude = (double)e.getProperty("longitude");
+			this.groupId = (long)e.getProperty("groupId");
+			this.timePosted = (Date)e.getProperty("timePosted");
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public Entity toEntity() {
+		Entity e = new Entity("Message");
+		e.setProperty("message", this.message);
+		e.setProperty("postingUser", this.postingUser);
+		e.setProperty("score", this.score);
+		e.setProperty("latitude", this.latitude);
+		e.setProperty("longitude", this.longitude);
+		e.setProperty("groupId", this.getGroupId());
+		e.setProperty("timePosted", this.timePosted);
+		return e;
+	}
+
+	public long getId() {
 		return id;
 	}
 
@@ -45,12 +89,12 @@ public class Message {
 		this.message = message;
 	}
 
-	public String getPoster() {
-		return poster;
+	public String getPostingUser() {
+		return postingUser;
 	}
 
-	public void setPoster(String poster) {
-		this.poster = poster;
+	public void setPostingUser(String postingUser) {
+		this.postingUser = postingUser;
 	}
 
 	public int getScore() {
@@ -77,7 +121,7 @@ public class Message {
 		this.longitude = longitude;
 	}
 
-	public int getGroupId() {
+	public long getGroupId() {
 		return groupId;
 	}
 
@@ -85,11 +129,11 @@ public class Message {
 		this.groupId = groupId;
 	}
 
-	public Date getTime() {
-		return time;
+	public Date getTimePosted() {
+		return timePosted;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void setTimePosted(Date timePosted) {
+		this.timePosted = timePosted;
 	}
 }

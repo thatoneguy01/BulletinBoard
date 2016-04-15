@@ -7,6 +7,8 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.datastore.Query.Filter;
@@ -16,7 +18,6 @@ import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
-import com.google.api.server.spi.response.BadRequestException;
 
 /**
  * Defines v1 of a helloworld API, which provides simple "greeting" methods.
@@ -37,8 +38,8 @@ public class Messages {
 	public static ArrayList<GroupMembership> groupMemberships = new ArrayList<GroupMembership>();
 	public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	
-	public static int getUniqueMessageId() {
-		int largest = -1;
+	public static long getUniqueMessageId() {
+		long largest = -1;
 		for (Message message : messages) {
 			if (message.getId() > largest) {
 				largest = message.getId();
@@ -78,8 +79,17 @@ public class Messages {
 	}*/
 	
 	@ApiMethod(name = "createMessage", httpMethod = "post", path = "messages/createMessage")
-	public void createMessage() {
-		//TODO parse input
+	public Map createMessage(Message message) {
+		//Message m = new Message(message, postingUser, latitude, longitude, groupId, timePosted);
+		Key k = datastore.put(message.toEntity());
+		Map m = new HashMap<>();
+		if (k != null)
+			m.put("succeeded", new Boolean(true));
+		else
+			m.put("succeeded", new Boolean(false));
+		return m;
+			
+		//Logger.getGlobal().log(Level.SEVERE, "WORKING");
 	}
 	
 	@ApiMethod(name = "getAllMessages", httpMethod = "get", path = "messages/getAllMessages")

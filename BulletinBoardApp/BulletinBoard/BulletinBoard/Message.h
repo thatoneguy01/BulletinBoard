@@ -14,8 +14,10 @@
 @property NSString* postingUser;
 @property int score;
 @property NSString* location;
-@property BOOL publicVisable;
-@property NSString* timePosted;
+@property NSNumber* lat;
+@property NSNumber* lon;
+@property long long groupId;
+@property NSDate* timePosted;
 
 -(instancetype)initWithMessage:(NSString*)message;
 -(NSDictionary*)toDict;
