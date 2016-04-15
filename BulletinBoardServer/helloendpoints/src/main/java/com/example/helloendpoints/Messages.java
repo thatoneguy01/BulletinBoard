@@ -67,7 +67,7 @@ public class Messages {
 		return (largest + 1);
 	}
 	
-	public static int getUniqueGroupId() {
+	/*public static int getUniqueGroupId() {
 		int largest = -1;
 		for (Group group : groups) {
 			if (group.getId() > largest) {
@@ -75,7 +75,7 @@ public class Messages {
 			}
 		}
 		return (largest + 1);
-	}
+	}*/
 	
 	@ApiMethod(name = "createMessage", httpMethod = "post", path = "messages/createMessage")
 	public void createMessage() {
@@ -355,11 +355,11 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "createGroup", httpMethod = "get", path = "groups/createGroup")
-	public Map<String, Integer> createGroup(@Named("groupName") String groupName) {
+	public Map createGroup(@Named("groupName") String groupName) {
 		Group group = new Group(groupName);
 		groups.add(group);
-		HashMap<String, Integer> toReturn = new HashMap<String, Integer>();
-		toReturn.put("groupId", new Integer(group.getId()));
+		HashMap toReturn = new HashMap<>();
+		toReturn.put("groupId", new Long(group.getId()));
 		return toReturn;
 		//return group.getId();
 	}
@@ -393,13 +393,42 @@ public class Messages {
 	public List<Group> listGroups(@Named("username") String username) {
 		// just list groupId and groupName
 		//TODO
-		Account account = this.getAccount(username);
+		/*Account account = this.getAccount(username);
 		List<Group> userGroups = new ArrayList<Group>();
 		for (GroupMembership groupMembership : groupMemberships) {
 			if (groupMembership.getMemberId() == account.getId()) {
 				userGroups.addAll(this.getGroups(groupMembership.getGroupId()));
 			}
 		}
-		return userGroups;
+		return userGroups;*/
+
+		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
+		Query q = new Query("Account").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		if (!results.isEmpty()) {
+			long accountId = results.get(0).getKey().getId();
+			filter = new FilterPredicate("memberId", FilterOperator.EQUAL, accountId);
+			q = new Query("GroupMembership").setFilter(filter);
+			results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		}
+		else
+			return new ArrayList<>();
+		if (!results.isEmpty()) {
+			List groupIds = new LinkedList();
+			for (Entity e : results) {
+				groupIds.add(e.getProperty("groupId"));
+			}
+			filter = new FilterPredicate("ID", FilterOperator.IN, groupIds);
+			q = new Query("Group").setFilter(filter).addSort("name", Query.SortDirection.ASCENDING);
+			results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		}
+		if (!results.isEmpty()) {
+			List<Group> groups = new LinkedList();
+			for (Entity e : results) {
+				groups.add(new Group(e));
+			}
+			return groups;
+		}
+		return null;
 	}
 }

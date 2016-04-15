@@ -176,8 +176,9 @@
         //process response
         NSError* jsonError;
         NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
-        if ((bool)[responseContent objectForKey:@"exists"]) {
-            NSString* urlString = [NSString stringWithFormat:@"%@accounts/checkPassword?username=%@&password=%@", API_DOMAIN, _usernameField.text, _passwordField.text];
+        NSNumber* ack = [responseContent objectForKey:@"exists"];
+        if ([ack boolValue]) {
+            NSString* urlString = [NSString stringWithFormat:@"%@accounts/createAccount?username=%@&password=%@", API_DOMAIN, _usernameField.text, _passwordField.text];
             NSURL* url = [NSURL URLWithString:urlString];
             NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
             [request setHTTPMethod:@"GET"];
@@ -213,7 +214,57 @@
 }
 
 -(IBAction)registerAccount:(id)sender {
+    if ([_usernameField.text isEqualToString:@""] || [_passwordField.text isEqualToString:@""]) {
+        [self invalidLoginAlert];
+        return;
+    }
+    NSString* urlString = [NSString stringWithFormat:@"%@accounts/accountExists?username=%@", API_DOMAIN, _usernameField.text];
+    NSURL* url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+    NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
+    NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
+    NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        //process response
+        NSError* jsonError;
+        NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+        if ((bool)[responseContent objectForKey:@"exists"]) {
+            NSString* urlString = [NSString stringWithFormat:@"%@accounts/checkPassword?username=%@&password=%@", API_DOMAIN, _usernameField.text, _passwordField.text];
+            NSURL* url = [NSURL URLWithString:urlString];
+            NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
+            [request setHTTPMethod:@"GET"];
+            [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+            NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+            //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
+            NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
+            NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:
+                                         ^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+                                             NSError* jsonError;
+                                             NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+                                             NSNumber* accepted = [responseContent objectForKey:@"accepted"];
+                                             if ([accepted boolValue]) {
+                                                 [self performSelectorOnMainThread:@selector(success) withObject:nil waitUntilDone:true];
+                                                 return;
+                                             }
+                                             else {
+                                                 [self performSelectorOnMainThread:@selector(invalidLoginAlert) withObject:nil waitUntilDone:true];
+                                                 //[self invalidLoginAlert];
+                                                 return;
+                                             }}];
+            [getTask resume];
+        }
+        else {
+            [self performSelectorOnMainThread:@selector(invalidLoginAlert) withObject:nil waitUntilDone:true];
+            //[self invalidLoginAlert];
+            return;
+        }
+        [getTask resume];
+    }];
+    [getTask resume];
     
+
 }
 
 -(void)loginButton:(FBSDKLoginButton *)loginButton didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result error:(NSError *)error {

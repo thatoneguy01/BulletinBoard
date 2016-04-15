@@ -1,25 +1,46 @@
 package com.example.helloendpoints;
 
+import com.google.appengine.api.datastore.Entity;
+
 import java.util.Calendar;
 import java.util.Date;
 
 public class Group {
 
-	public int id;
+	public long id;
 	public String name;
 	public Date time;
 	
 	public Group(String name) {
-		this.id = Messages.getUniqueGroupId();
+		//this.id = Messages.getUniqueGroupId();
 		this.name = name;
 		this.time = Calendar.getInstance().getTime();
 	}
+
+	public Group(Entity e) {
+		try {
+			this.id = e.getKey().getId();
+			this.name = (String)e.getProperty("name");
+			this.time = (Date)e.getProperty("time");
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public Entity toEntity() {
+		Entity e = new Entity("Group");
+		e.setProperty("name", this.name);
+		e.setProperty("time", this.time);
+		return e;
+	}
+
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 

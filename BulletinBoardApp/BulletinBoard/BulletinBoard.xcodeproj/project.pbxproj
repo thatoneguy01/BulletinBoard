@@ -12,6 +12,7 @@
 		6540DC6E1CB753C00077F0A8 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6540DC6B1CB753C00077F0A8 /* FBSDKCoreKit.framework */; };
 		6540DC6F1CB753C00077F0A8 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6540DC6C1CB753C00077F0A8 /* FBSDKLoginKit.framework */; };
 		6540DC701CB753C00077F0A8 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6540DC6D1CB753C00077F0A8 /* FBSDKShareKit.framework */; };
+		6540DC741CBCAA080077F0A8 /* Group.m in Sources */ = {isa = PBXBuildFile; fileRef = 6540DC731CBCAA080077F0A8 /* Group.m */; };
 		657A0C451C8016250053576B /* ScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 657A0C441C8016250053576B /* ScanViewController.m */; };
 		657A0C481C801DA50053576B /* MessageListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 657A0C471C801DA50053576B /* MessageListTableViewController.m */; };
 		657A0C4B1C801E010053576B /* MessageMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 657A0C4A1C801E010053576B /* MessageMapViewController.m */; };
@@ -59,6 +60,8 @@
 		6540DC6B1CB753C00077F0A8 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = ../../../FacebookSDK/FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		6540DC6C1CB753C00077F0A8 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = ../../../FacebookSDK/FBSDKLoginKit.framework; sourceTree = "<group>"; };
 		6540DC6D1CB753C00077F0A8 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = ../../../FacebookSDK/FBSDKShareKit.framework; sourceTree = "<group>"; };
+		6540DC721CBCAA080077F0A8 /* Group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Group.h; sourceTree = "<group>"; };
+		6540DC731CBCAA080077F0A8 /* Group.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Group.m; sourceTree = "<group>"; };
 		657A0C431C8016250053576B /* ScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanViewController.h; sourceTree = "<group>"; };
 		657A0C441C8016250053576B /* ScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
 		657A0C461C801DA50053576B /* MessageListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageListTableViewController.h; sourceTree = "<group>"; };
@@ -139,6 +142,17 @@
 			name = Framework;
 			sourceTree = "<group>";
 		};
+		6540DC711CBCA9A10077F0A8 /* Model Objects */ = {
+			isa = PBXGroup;
+			children = (
+				65C0FBD81C7F587300B9183D /* Message.h */,
+				65C0FBD91C7F587300B9183D /* Message.m */,
+				6540DC721CBCAA080077F0A8 /* Group.h */,
+				6540DC731CBCAA080077F0A8 /* Group.m */,
+			);
+			name = "Model Objects";
+			sourceTree = "<group>";
+		};
 		65C0FB8E1C76564300B9183D = {
 			isa = PBXGroup;
 			children = (
@@ -164,6 +178,7 @@
 		65C0FB991C76564300B9183D /* BulletinBoard */ = {
 			isa = PBXGroup;
 			children = (
+				6540DC711CBCA9A10077F0A8 /* Model Objects */,
 				65C0FB9D1C76564300B9183D /* AppDelegate.h */,
 				65C0FB9E1C76564300B9183D /* AppDelegate.m */,
 				65C0FBDE1C7F9D8700B9183D /* KeychainWrapper.h */,
@@ -173,8 +188,6 @@
 				65C0FBAB1C76564300B9183D /* LaunchScreen.storyboard */,
 				65C0FBAE1C76564300B9183D /* Info.plist */,
 				65C0FB9A1C76564300B9183D /* Supporting Files */,
-				65C0FBD81C7F587300B9183D /* Message.h */,
-				65C0FBD91C7F587300B9183D /* Message.m */,
 				65C0FBDB1C7F91CA00B9183D /* Constants.h */,
 				65C0FBDC1C7F91CA00B9183D /* Constants.m */,
 				65C0FB9B1C76564300B9183D /* main.m */,
@@ -359,6 +372,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6540DC741CBCAA080077F0A8 /* Group.m in Sources */,
 				65B7CFD91C94F964000EEAE3 /* ReplyTableViewController.m in Sources */,
 				65C0FB9F1C76564300B9183D /* AppDelegate.m in Sources */,
 				65B7CFDC1C94FB88000EEAE3 /* MessageTableViewCell.m in Sources */,

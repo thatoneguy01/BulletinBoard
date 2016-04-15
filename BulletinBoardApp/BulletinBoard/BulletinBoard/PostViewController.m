@@ -8,6 +8,8 @@
 
 #import "PostViewController.h"
 #import "ConfirmViewController.h"
+#import "Group.h"
+#import "Constants.h"
 
 @interface PostViewController ()
 
@@ -15,6 +17,7 @@
 @property (strong, nonatomic) IBOutlet UISegmentedControl* privateSwitch;
 @property (strong, nonatomic) IBOutlet UITextField* privateGroup;
 @property (strong, nonatomic) IBOutlet UIButton* nextButton;
+@property (strong, nonatomic) NSArray* userGroups;
 //@property (strong, nonatomic) Modal* popController;
 
 @end
@@ -32,8 +35,35 @@
     // Dispose of any resources that can be recreated.
 }
 
--(IBAction)dismissKeyboard:(id)sender{
+-(IBAction)dismissKeyboard:(id)sender {
     [_messageBox resignFirstResponder];
+}
+
+-(IBAction)togglePrivate:(id)sender {
+    if (_privateSwitch.selectedSegmentIndex == 1) {
+        NSString* username = [[NSUserDefaults standardUserDefaults] objectForKey:@"username"];
+        NSString* urlString = [NSString stringWithFormat:@"%@groups/listGroups?username=%@", API_DOMAIN, username];
+        NSURL* url = [NSURL URLWithString:urlString];
+        NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
+        [request setHTTPMethod:@"GET"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+        NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+        //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
+        NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
+        NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            NSError* jsonError;
+            NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+            NSArray* groups = [responseContent objectForKey:@"items"];
+            NSMutableArray* groupList = [[NSMutableArray alloc] init];
+            for (NSDictionary* dict in groups) {
+                Group* g = [[Group alloc] initWithDict:dict];
+                [groupList addObject:g];
+            }
+            _userGroups = [[NSArray alloc] initWithArray:groupList];
+        }
+                                     ];
+        [getTask resume];
+    }
 }
 
 #pragma mark - Navigation
