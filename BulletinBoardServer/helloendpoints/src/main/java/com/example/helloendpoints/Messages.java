@@ -43,26 +43,26 @@ public class Messages {
 	public static ArrayList<GroupMembership> groupMemberships = new ArrayList<GroupMembership>();
 	public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	
-	public static long getUniqueMessageId() {
-		long largest = -1;
-		for (Message message : messages) {
-			if (message.getId() > largest) {
-				largest = message.getId();
-			}
-		}
-		return (largest + 1);
-	}
-	
-	public static long getUniqueAccountID() {
-		long largest = -1;
-		for (Account account : accounts) {
-			if (account.getId() > largest) {
-				largest = account.getId();
-			}
-		}
-		return (largest + 1);
-	}
-	
+//	public static long getUniqueMessageId() {
+//		long largest = -1;
+//		for (Message message : messages) {
+//			if (message.getId() > largest) {
+//				largest = message.getId();
+//			}
+//		}
+//		return (largest + 1);
+//	}
+//	
+//	public static long getUniqueAccountID() {
+//		long largest = -1;
+//		for (Account account : accounts) {
+//			if (account.getId() > largest) {
+//				largest = account.getId();
+//			}
+//		}
+//		return (largest + 1);
+//	}
+//	
 //	public static int getUniqueReplyId() {
 //		int largest = -1;
 //		for (Reply reply : replies) {
@@ -72,16 +72,16 @@ public class Messages {
 //		}
 //		return (largest + 1);
 //	}
-	
-	/*public static int getUniqueGroupId() {
-		int largest = -1;
-		for (Group group : groups) {
-			if (group.getId() > largest) {
-				largest = group.getId();
-			}
-		}
-		return (largest + 1);
-	}*/
+//	
+//	public static int getUniqueGroupId() {
+//		int largest = -1;
+//		for (Group group : groups) {
+//			if (group.getId() > largest) {
+//				largest = group.getId();
+//			}
+//		}
+//		return (largest + 1);
+//	}
 	
 	@ApiMethod(name = "createMessage", httpMethod = "post", path = "messages/createMessage")
 	public Map createMessage(Message message) {
@@ -177,10 +177,21 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "modifyMessage", httpMethod = "post", path = "messages/modifyMessage")
-	public void modifyMessage(@Named("messageId") int messageId) {
-		//TOOD
-		//parse message param out of body
-		//the body is just a string, not json
+	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, @Named("modifiedMessage") String modifiedMessage) { //TODO PARAM
+		Key messageIdKey = KeyFactory.createKey("Message", messageId);
+		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
+		Query q = new Query("Message").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		if (results.isEmpty()) {
+			result.put("succeeded", new Boolean(false));
+		} else {
+			Entity e = results.get(0);
+			e.setProperty("message", modifiedMessage);
+			datastore.put(e);
+			result.put("succeeded", new Boolean(true));
+		}
+		return result;
 	}
 	
 	@ApiMethod(name = "deleteMessage", httpMethod = "get", path = "messages/deleteMessage")
@@ -204,7 +215,7 @@ public class Messages {
 		} else {
 			Entity e = results.get(0);
 			e.setProperty("score", ((long) e.getProperty("score") + scoreMod));
-			datastore.put(results.get(0));
+			datastore.put(e);
 			result.put("succeeded", new Boolean(true));
 		}
 		return result;
