@@ -234,7 +234,7 @@
                                     <constraint firstAttribute="width" secondItem="x2R-xY-0HV" secondAttribute="height" multiplier="560:79" id="6Ca-V5-xrK"/>
                                     <constraint firstAttribute="height" constant="44" id="XhD-BW-bS8"/>
                                 </constraints>
-                                <state key="normal" title="Button"/>
+                                <state key="normal" title="Post"/>
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="6Ca-V5-xrK"/>
@@ -463,18 +463,45 @@
         <scene sceneID="7lH-z0-V5S">
             <objects>
                 <tableViewController storyboardIdentifier="yourMessages" id="zlc-6c-Qdw" customClass="YourMessagesTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="3z5-hz-WaO">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="yourMessageCell" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="3z5-hz-WaO">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="mRr-ig-a2U">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="mRr-ig-a2U" customClass="YourMessagesTableViewCell">
                                 <rect key="frame" x="0.0" y="92" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mRr-ig-a2U" id="Le9-ds-Bvl">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="12/23/23" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8wI-of-74R">
+                                            <rect key="frame" x="523" y="11" width="69" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TkS-Rx-qsl">
+                                            <rect key="frame" x="8" y="11" width="507" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottomMargin" secondItem="8wI-of-74R" secondAttribute="bottom" constant="3" id="435-po-aIT"/>
+                                        <constraint firstItem="8wI-of-74R" firstAttribute="top" secondItem="Le9-ds-Bvl" secondAttribute="topMargin" constant="3" id="8Zk-Zj-REV"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="8wI-of-74R" secondAttribute="trailing" id="EHw-dz-92p"/>
+                                        <constraint firstItem="TkS-Rx-qsl" firstAttribute="top" secondItem="Le9-ds-Bvl" secondAttribute="topMargin" constant="3" id="SG2-6L-MfC"/>
+                                        <constraint firstItem="8wI-of-74R" firstAttribute="leading" secondItem="TkS-Rx-qsl" secondAttribute="trailing" constant="8" id="cn7-UI-X8S"/>
+                                        <constraint firstAttribute="leadingMargin" secondItem="TkS-Rx-qsl" secondAttribute="leading" id="jL5-Ts-6dR"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="TkS-Rx-qsl" secondAttribute="bottom" constant="3" id="tuL-ch-M8i"/>
+                                    </constraints>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="date" destination="8wI-of-74R" id="L5E-e2-lY5"/>
+                                    <outlet property="messagePreview" destination="TkS-Rx-qsl" id="bq3-to-NSJ"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -530,6 +557,9 @@
                                     <constraint firstAttribute="height" constant="42" id="e61-5P-u9P"/>
                                 </constraints>
                                 <state key="normal" title="Create"/>
+                                <connections>
+                                    <action selector="create:" destination="lDM-Zi-kWt" eventType="touchUpInside" id="9gp-6t-2oH"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create New Group" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wgp-qs-ZLr">
                                 <rect key="frame" x="20" y="72" width="213" height="26"/>

@@ -37,6 +37,7 @@
 		65DBF13B1CC1F0FF00D8A23D /* YourMessagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF13A1CC1F0FF00D8A23D /* YourMessagesTableViewController.m */; };
 		65DBF1411CC1F1A600D8A23D /* YourGroupsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1401CC1F1A600D8A23D /* YourGroupsTableViewController.m */; };
 		65DBF1441CC1F1BE00D8A23D /* NewGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1431CC1F1BE00D8A23D /* NewGroupViewController.m */; };
+		65DBF1491CC2DDC000D8A23D /* YourMessagesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1481CC2DDC000D8A23D /* YourMessagesTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +114,8 @@
 		65DBF1401CC1F1A600D8A23D /* YourGroupsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YourGroupsTableViewController.m; sourceTree = "<group>"; };
 		65DBF1421CC1F1BE00D8A23D /* NewGroupViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewGroupViewController.h; sourceTree = "<group>"; };
 		65DBF1431CC1F1BE00D8A23D /* NewGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewGroupViewController.m; sourceTree = "<group>"; };
+		65DBF1471CC2DDC000D8A23D /* YourMessagesTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YourMessagesTableViewCell.h; sourceTree = "<group>"; };
+		65DBF1481CC2DDC000D8A23D /* YourMessagesTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YourMessagesTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -274,6 +277,7 @@
 		65DBF13E1CC1F13200D8A23D /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				65DBF1451CC2DD8700D8A23D /* Cells */,
 				65DBF1361CC1EC6700D8A23D /* SettingsViewController.h */,
 				65DBF1371CC1EC6700D8A23D /* SettingsViewController.m */,
 				65DBF1391CC1F0FF00D8A23D /* YourMessagesTableViewController.h */,
@@ -284,6 +288,15 @@
 				65DBF1431CC1F1BE00D8A23D /* NewGroupViewController.m */,
 			);
 			name = Settings;
+			sourceTree = "<group>";
+		};
+		65DBF1451CC2DD8700D8A23D /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				65DBF1471CC2DDC000D8A23D /* YourMessagesTableViewCell.h */,
+				65DBF1481CC2DDC000D8A23D /* YourMessagesTableViewCell.m */,
+			);
+			name = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -432,6 +445,7 @@
 				6503A5C91C86285500ED99E1 /* LoginViewController.m in Sources */,
 				65DBF13B1CC1F0FF00D8A23D /* YourMessagesTableViewController.m in Sources */,
 				65DBF1441CC1F1BE00D8A23D /* NewGroupViewController.m in Sources */,
+				65DBF1491CC2DDC000D8A23D /* YourMessagesTableViewCell.m in Sources */,
 				657A0C481C801DA50053576B /* MessageListTableViewController.m in Sources */,
 				65DBF1411CC1F1A600D8A23D /* YourGroupsTableViewController.m in Sources */,
 				65C0FBD21C7F4FED00B9183D /* PostViewController.m in Sources */,
