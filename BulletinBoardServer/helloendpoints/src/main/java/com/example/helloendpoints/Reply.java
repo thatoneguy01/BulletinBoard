@@ -3,25 +3,50 @@ package com.example.helloendpoints;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.google.appengine.api.datastore.Entity;
+
 public class Reply {
 	
-	public int id;
+	public long id;
 	public String message;
-	public String parentId;
-	public Date time;
+	public long parentId;
+	public Date timePosted;
 	
-	public Reply(String message, String parentId) {
-		this.id = Messages.getUniqueReplyId();
-		this.message = message;
-		this.parentId = parentId;
-		this.time = Calendar.getInstance().getTime();
+	public Reply() {
+		
 	}
 	
-	public int getId() {
+	public Reply(String message, long parentId) {
+//		this.id = Messages.getUniqueReplyId();
+		this.message = message;
+		this.parentId = parentId;
+		this.timePosted = Calendar.getInstance().getTime();
+	}
+	
+	public Reply(Entity e) {
+		try {
+			this.id = e.getKey().getId();
+			this.message = (String) e.getProperty("message");
+			this.parentId = (long) e.getProperty("parentId");
+			this.timePosted = (Date) e.getProperty("timePosted");
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+	
+	public Entity toEntity() {
+		Entity e = new Entity("Reply");
+		e.setProperty("message", this.message);
+		e.setProperty("parentId", this.parentId);
+		e.setProperty("timePosted", this.timePosted);
+		return e;
+	}
+	
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -33,20 +58,20 @@ public class Reply {
 		this.message = message;
 	}
 
-	public String getParentId() {
+	public long getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(String parentId) {
+	public void setParentId(long parentId) {
 		this.parentId = parentId;
 	}
 
-	public Date getTime() {
-		return time;
+	public Date getTimePosted() {
+		return timePosted;
 	}
 
-	public void setTime(Date time) {
-		this.time = time;
+	public void setTimePosted(Date timePosted) {
+		this.timePosted = timePosted;
 	}
 	
 }

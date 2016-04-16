@@ -62,15 +62,15 @@ public class Messages {
 		return (largest + 1);
 	}
 	
-	public static int getUniqueReplyId() {
-		int largest = -1;
-		for (Reply reply : replies) {
-			if (reply.getId() > largest) {
-				largest = reply.getId();
-			}
-		}
-		return (largest + 1);
-	}
+//	public static int getUniqueReplyId() {
+//		int largest = -1;
+//		for (Reply reply : replies) {
+//			if (reply.getId() > largest) {
+//				largest = reply.getId();
+//			}
+//		}
+//		return (largest + 1);
+//	}
 	
 	/*public static int getUniqueGroupId() {
 		int largest = -1;
@@ -128,19 +128,45 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "replies", httpMethod = "get", path = "replies/replies")
-	public List<Reply> replies(@Named("messageId") String messageId) {
-		List<Reply> messageReplies = new ArrayList<Reply>();
-		for (Reply reply : replies) {
-			if (reply.getParentId().equals(messageId)) {
-				messageReplies.add(reply);
+	public List<Reply> replies(@Named("messageId") long messageId) {
+		Filter filter = new FilterPredicate("parentId", FilterOperator.EQUAL, messageId);
+		Query q = new Query("Reply").setFilter(filter).addSort("timePosted", Query.SortDirection.DESCENDING);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		List<Reply> replies = new ArrayList<Reply>();
+		for (Entity e : results) {
+			replies.add(new Reply(e));
+		}
+		return replies;
+	}
+	
+	@ApiMethod(name = "getFirst20Replies", httpMethod = "get", path = "messages/getFirst20Replies")
+	public List<Reply> getFirst20Replies(@Named("messageId") long messageId) {
+		Filter filter = new FilterPredicate("parentId", FilterOperator.EQUAL, messageId);
+		Query q = new Query("Reply").setFilter(filter).addSort("timePosted", Query.SortDirection.DESCENDING);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		List<Reply> replies = new ArrayList<Reply>();
+		if (results.size() > 20) {
+			for (int i = 0; i < 20; i++) {
+				replies.add(new Reply(results.get(i)));
+			}
+		} else {
+			for (Entity e : results) {
+				replies.add(new Reply(e));
 			}
 		}
-		return messageReplies;
+		return replies;
 	}
 	
 	@ApiMethod(name = "createReply", httpMethod = "post", path = "replies/createReply")
-	public void createReply() {
-		//TODO
+	public Map<String, Boolean> createReply(Reply reply) {
+		Key k = datastore.put(reply.toEntity());
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		if (k != null) {
+			result.put("succeeded", new Boolean(true));
+		} else {
+			result.put("succeeded", new Boolean(false));
+		}
+		return result;
 	}
 	
 	@ApiMethod(name = "messageForUser", httpMethod = "get", path = "messages/messagesForUser")
