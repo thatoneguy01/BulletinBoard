@@ -195,11 +195,16 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "deleteMessage", httpMethod = "get", path = "messages/deleteMessage")
-	public void deleteMessage(@Named("messageId") int messageId) {
-		for (Message message : messages) {
-			if (message.getId() == messageId) {
-				messages.remove(message);
-			}
+	public Map<String, Boolean> deleteMessage(@Named("messageId") long messageId) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		try {
+			Key messageIdKey = KeyFactory.createKey("Message", messageId);
+			datastore.delete(messageIdKey);
+			result.put("succeeded", new Boolean(true));
+			return result;
+		} catch (Exception e) {
+			result.put("succeeded", new Boolean(false));
+			return result;
 		}
 	}
 	
