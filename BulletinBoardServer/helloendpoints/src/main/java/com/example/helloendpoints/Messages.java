@@ -95,6 +95,12 @@ public class Messages {
 	
 	@ApiMethod(name = "getAllMessages", httpMethod = "get", path = "messages/getAllMessages")
 	public List<Message> getAllMessages() {
+		Query q = new Query("Message").addSort("timePosted", Query.SortDirection.DESCENDING);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		List<Message> messages = new ArrayList<Message>();
+		for (Entity e : results) {
+			messages.add(new Message(e));
+		}
 		return messages;
 	}
 	
@@ -346,10 +352,10 @@ public class Messages {
 		//return group.getId();
 	}*/
 	
-	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/createGroup")
+	/*@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/createGroup")
 	public void addToGroup(@Named("name") String name, List<Group> members) {
 		//TODO parse body for list of username strings
-	}
+	}*/
 	
 	@ApiMethod(name = "leaveGroup", httpMethod = "get", path = "groups/leaveGroup")
 	public void leaveGroup(@Named("username") String username, @Named("groupId") int groupId) {
