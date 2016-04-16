@@ -106,12 +106,19 @@ public class Messages {
 	
 	@ApiMethod(name = "getFirst20Messages", httpMethod = "get", path = "messages/getFirst20Messages")
 	public List<Message> getFirst20Messages() {
-		//TODO messages must be ordered for this to make sense
-		if (messages.size() > 20) {
-			return messages.subList(0, 20);
+		Query q = new Query("Message").addSort("timePosted", Query.SortDirection.DESCENDING);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		List<Message> messages = new ArrayList<Message>();
+		if (results.size() > 20) {
+			for (int i = 0; i < 20; i++) {
+				messages.add(new Message(results.get(i)));
+			}
 		} else {
-			return messages;
+			for (Entity e : results) {
+				messages.add(new Message(e));
+			}
 		}
+		return messages;
 	}
 	
 	@ApiMethod(name = "messagesNear", httpMethod = "get", path = "messages/messagesNear")
