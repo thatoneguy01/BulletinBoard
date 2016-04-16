@@ -403,7 +403,7 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "createGroup", httpMethod = "get", path = "groups/createGroup")
-	public Map createGroup(Group group) {
+	public Map<String, Boolean> createGroup(Group group) {
 		Key k = datastore.put(group.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		if (k != null) {

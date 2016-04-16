@@ -15,8 +15,7 @@ public class Group {
 		this.name = name;
 		this.time = Calendar.getInstance().getTime();
 	}
-	public Group(long id, String name, Date time) {
-		this.id = id;
+	public Group(String name, Date time) {
 		this.name = name;
 		this.time = time;
 	}
