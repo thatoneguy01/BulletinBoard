@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -177,7 +178,7 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "modifyMessage", httpMethod = "post", path = "messages/modifyMessage")
-	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, @Named("modifiedMessage") String modifiedMessage) { //TODO PARAM
+	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, @Named("modifiedMessage") String modifiedMessage) {
 		Key messageIdKey = KeyFactory.createKey("Message", messageId);
 		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
 		Query q = new Query("Message").setFilter(filter);
@@ -417,11 +418,40 @@ public class Messages {
 	}*/
 	
 	@ApiMethod(name = "leaveGroup", httpMethod = "get", path = "groups/leaveGroup")
-	public void leaveGroup(@Named("username") String username, @Named("groupId") int groupId) {
-		Account account = getAccount(username);
-		for (GroupMembership groupMembership : groupMemberships) {
-			if (groupMembership.getMemberId() == account.getId() && groupMembership.getGroupId() == groupId) {
-				groupMemberships.remove(groupMembership);
+	public Map<String, Boolean> leaveGroup(@Named("groupMembershipId") long groupMembershipId) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		try {
+			Key groupMembershipIdKey = KeyFactory.createKey("GroupMembership", groupMembershipId);
+			datastore.delete(groupMembershipIdKey);
+			result.put("succeeded", new Boolean(true));
+			return result;
+		} catch (Exception e) {
+			result.put("succeeded", new Boolean(false));
+			return result;
+		}
+	}
+	
+	@ApiMethod(name = "leaveGroup", httpMethod = "get", path = "groups/leaveGroup")
+	public Map<String, Boolean> leaveGroup(@Named("username") String username, @Named("groupId") long groupId) {
+		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
+		Query q1 = new Query("Account").setFilter(filter);
+		List<Entity> results1 = datastore.prepare(q1).asList(FetchOptions.Builder.withDefaults());
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		if (results1.isEmpty()) {
+			result.put("succeeded", new Boolean(false));
+			return result;
+		} else {
+			long accountId = (long) results1.get(0).getProperty("id");
+			Filter memberIdFilter = new FilterPredicate("groupId", FilterOperator.EQUAL, groupId);
+			Filter groupIdFilter = new FilterPredicate("memberId", FilterOperator.EQUAL, accountId);
+			Filter groupMembershipFilter = CompositeFilterOperator.and(groupIdFilter, memberIdFilter);
+			Query q2 = new Query("GroupMembership").setFilter(groupMembershipFilter);
+			List<Entity> results2 = datastore.prepare(q1).asList(FetchOptions.Builder.withDefaults());
+			if (results2.isEmpty()) {
+				result.put("succeeded", new Boolean(false));
+				return result;
+			} else {
+				return this.leaveGroup((long) results2.get(0).getProperty("id"));
 			}
 		}
 	}

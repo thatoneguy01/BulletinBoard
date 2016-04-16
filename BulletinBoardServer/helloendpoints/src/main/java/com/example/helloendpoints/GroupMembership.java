@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.Entity;
 
 public class GroupMembership {
 	
+	public long id;
 	public long groupId;
 	public long memberId;
 	
@@ -14,6 +15,7 @@ public class GroupMembership {
 
 	public GroupMembership(Entity e) {
 		try {
+			this.id = e.getKey().getId();
 			this.groupId = (long)e.getProperty("groupId");
 			this.memberId = (long)e.getProperty("memberId");
 		}
@@ -27,6 +29,14 @@ public class GroupMembership {
 		e.setProperty("groupId", this.groupId);
 		e.setProperty("memberId", this.memberId);
 		return e;
+	}
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public long getGroupId() {
