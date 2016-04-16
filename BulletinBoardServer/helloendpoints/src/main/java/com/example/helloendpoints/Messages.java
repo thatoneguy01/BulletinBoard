@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -192,12 +193,21 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "score", httpMethod = "get", path = "messages/score")
-	public void score(@Named("messageId") int messageId, @Named("scoreMod") int scoreMod) {
-		for (Message message : messages) {
-			if (message.getId() == messageId) {
-				message.setScore(message.getScore() + scoreMod);
-			}
+	public Map<String, Boolean> score(@Named("messageId") long messageId, @Named("scoreMod") int scoreMod) {
+		Key messageIdKey = KeyFactory.createKey("Message", messageId);
+		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
+		Query q = new Query("Message").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		if (results.isEmpty()) {
+			result.put("succeeded", new Boolean(false));
+		} else {
+			Entity e = results.get(0);
+			e.setProperty("score", ((long) e.getProperty("score") + scoreMod));
+			datastore.put(results.get(0));
+			result.put("succeeded", new Boolean(true));
 		}
+		return result;
 	}
 	
 	@ApiMethod(name = "checkPassword", httpMethod = "get", path = "accounts/checkPassword")

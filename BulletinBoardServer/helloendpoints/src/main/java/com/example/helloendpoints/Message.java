@@ -9,7 +9,7 @@ public class Message {
 	public long id;
 	public String message;
 	public String postingUser;
-	public int score;
+	public long score;
 	public double latitude;
 	public double longitude;
 	public long groupId;
@@ -49,7 +49,7 @@ public class Message {
 			this.id = e.getKey().getId();
 			this.message = (String)e.getProperty("message");
 			this.postingUser = (String)e.getProperty("postingUser");
-			this.score = (int)e.getProperty("score");
+			this.score = (long) e.getProperty("score");
 			this.latitude = (double)e.getProperty("latitude");
 			this.longitude = (double)e.getProperty("longitude");
 			this.groupId = (long)e.getProperty("groupId");
@@ -96,11 +96,11 @@ public class Message {
 		this.postingUser = postingUser;
 	}
 
-	public int getScore() {
+	public long getScore() {
 		return score;
 	}
 
-	public void setScore(int score) {
+	public void setScore(long score) {
 		this.score = score;
 	}
 
