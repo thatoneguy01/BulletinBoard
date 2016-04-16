@@ -24,7 +24,7 @@ import com.google.api.server.spi.config.Named;
  */
 @Api(
 		name = "helloworld",
-		version = "v2",
+		version = "v3",
 		scopes = {Constants.EMAIL_SCOPE},
 		clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID, Constants.API_EXPLORER_CLIENT_ID},
 		audiences = {Constants.ANDROID_AUDIENCE}
@@ -88,7 +88,7 @@ public class Messages {
 		else
 			m.put("succeeded", new Boolean(false));
 		return m;
-			
+
 		//Logger.getGlobal().log(Level.SEVERE, "WORKING");
 	}
 	
@@ -129,7 +129,7 @@ public class Messages {
 		//TODO
 	}
 	
-	@ApiMethod(name = "messageForUser", httpMethod = "get", path = "messages/messageForUser")
+	@ApiMethod(name = "messageForUser", httpMethod = "get", path = "messages/messagesForUser")
 	public List<Message> messageForUser(@Named("username") String username) {
 		//TODO
 		return null;
@@ -364,7 +364,7 @@ public class Messages {
 		}
 	}
 	
-	@ApiMethod(name = "createGroup", httpMethod = "get", path = "groups/createGroup")
+	/*@ApiMethod(name = "createGroup", httpMethod = "get", path = "groups/createGroup")
 	public Map createGroup(@Named("groupName") String groupName) {
 		Group group = new Group(groupName);
 		groups.add(group);
@@ -372,10 +372,10 @@ public class Messages {
 		toReturn.put("groupId", new Long(group.getId()));
 		return toReturn;
 		//return group.getId();
-	}
+	}*/
 	
-	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/addToGroup")
-	public void addToGroup() {
+	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/createGroup")
+	public void addToGroup(@Named("name") String name, List<Group> members) {
 		//TODO parse body for list of username strings
 	}
 	
@@ -399,7 +399,7 @@ public class Messages {
 		return memberGroups;
 	}
 	
-	@ApiMethod(name = "listGroups", httpMethod = "get", path = "groups/listGroups")
+	@ApiMethod(name = "listGroups", httpMethod = "get", path = "groups/groupsForUser")
 	public List<Group> listGroups(@Named("username") String username) {
 		// just list groupId and groupName
 		//TODO

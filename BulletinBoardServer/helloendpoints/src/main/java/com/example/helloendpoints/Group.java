@@ -16,6 +16,12 @@ public class Group {
 		this.name = name;
 		this.time = Calendar.getInstance().getTime();
 	}
+	public Group(long id, String name, Date time) {
+		this.id = id;
+		this.name = name;
+		this.time = time;
+	}
+	public Group() {}
 
 	public Group(Entity e) {
 		try {

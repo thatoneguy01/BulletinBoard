@@ -18,6 +18,20 @@
     return self;
 }
 
+-(instancetype)initWithDict: (NSDictionary*)dict {
+    self = [super init];
+    _message = [dict objectForKey:@"message"];
+    _postingUser = [dict objectForKey:@"postingUser"];
+    _lat = [dict objectForKey:@"latitude"];
+    _lon = [dict objectForKey:@"longitude"];
+    _score = [(NSNumber*)[dict objectForKey:@"score"] intValue];
+    _groupId = [(NSNumber*)[dict objectForKey:@"groupId"] longLongValue];
+    NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
+    [outputFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssz"];
+    _timePosted = [outputFormatter dateFromString:[dict objectForKey:@"timePosted"]];
+    return self;
+}
+
 -(NSDictionary*)toDict {
     NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
     [outputFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssz"];

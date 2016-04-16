@@ -20,6 +20,7 @@
 @property NSDate* timePosted;
 
 -(instancetype)initWithMessage:(NSString*)message;
+-(instancetype)initWithDict: (NSDictionary*)dic;
 -(NSDictionary*)toDict;
 
 @end
