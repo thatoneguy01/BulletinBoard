@@ -402,34 +402,22 @@ public class Messages {
 		}
 	}
 	
-	/*@ApiMethod(name = "createGroup", httpMethod = "get", path = "groups/createGroup")
-	public Map createGroup(@Named("groupName") String groupName) {
-		Group group = new Group(groupName);
-		groups.add(group);
-		HashMap toReturn = new HashMap<>();
-		toReturn.put("groupId", new Long(group.getId()));
-		return toReturn;
-		//return group.getId();
-	}*/
+	@ApiMethod(name = "createGroup", httpMethod = "get", path = "groups/createGroup")
+	public Map createGroup(Group group) {
+		Key k = datastore.put(group.toEntity());
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		if (k != null) {
+			result.put("succeeded", new Boolean(true));
+		} else {
+			result.put("succeeded", new Boolean(false));
+		}
+		return result;
+	}
 	
 	/*@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/createGroup")
 	public void addToGroup(@Named("name") String name, List<Group> members) {
 		//TODO parse body for list of username strings
 	}*/
-	
-	@ApiMethod(name = "leaveGroup", httpMethod = "get", path = "groups/leaveGroup")
-	public Map<String, Boolean> leaveGroup(@Named("groupMembershipId") long groupMembershipId) {
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		try {
-			Key groupMembershipIdKey = KeyFactory.createKey("GroupMembership", groupMembershipId);
-			datastore.delete(groupMembershipIdKey);
-			result.put("succeeded", new Boolean(true));
-			return result;
-		} catch (Exception e) {
-			result.put("succeeded", new Boolean(false));
-			return result;
-		}
-	}
 	
 	@ApiMethod(name = "leaveGroup", httpMethod = "get", path = "groups/leaveGroup")
 	public Map<String, Boolean> leaveGroup(@Named("username") String username, @Named("groupId") long groupId) {
@@ -446,24 +434,23 @@ public class Messages {
 			Filter groupIdFilter = new FilterPredicate("memberId", FilterOperator.EQUAL, accountId);
 			Filter groupMembershipFilter = CompositeFilterOperator.and(groupIdFilter, memberIdFilter);
 			Query q2 = new Query("GroupMembership").setFilter(groupMembershipFilter);
-			List<Entity> results2 = datastore.prepare(q1).asList(FetchOptions.Builder.withDefaults());
+			List<Entity> results2 = datastore.prepare(q2).asList(FetchOptions.Builder.withDefaults());
 			if (results2.isEmpty()) {
 				result.put("succeeded", new Boolean(false));
 				return result;
 			} else {
-				return this.leaveGroup((long) results2.get(0).getProperty("id"));
+				long groupMembershipId = ((long) results2.get(0).getProperty("id"));
+				try {
+					Key groupMembershipIdKey = KeyFactory.createKey("GroupMembership", groupMembershipId);
+					datastore.delete(groupMembershipIdKey);
+					result.put("succeeded", new Boolean(true));
+					return result;
+				} catch (Exception e) {
+					result.put("succeeded", new Boolean(false));
+					return result;
+				}
 			}
 		}
-	}
-	
-	private List<Group> getGroups(int groupMembershipId) {
-		List<Group> memberGroups = new ArrayList<Group>();
-		for (Group group : groups) {
-			if (group.getId() == groupMembershipId) {
-				memberGroups.add(group);
-			}
-		}
-		return memberGroups;
 	}
 	
 	@ApiMethod(name = "listGroups", httpMethod = "get", path = "groups/groupsForUser")
