@@ -24,7 +24,6 @@ public class Message {
 	}
 	
 	public Message(String message, String postingUser, double latitude, double longitude, long groupId, Date timePosted) {
-		//this.id = Messages.getUniqueMessageId();
 		this.message = message;
 		this.postingUser = postingUser;
 		this.score = 0;

@@ -12,7 +12,6 @@ public class Group {
 	public Date time;
 	
 	public Group(String name) {
-		//this.id = Messages.getUniqueGroupId();
 		this.name = name;
 		this.time = Calendar.getInstance().getTime();
 	}

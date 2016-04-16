@@ -5,19 +5,23 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.google.appengine.api.datastore.*;
-import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.FilterOperator;
+import java.util.Map;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 
 /**
  * Defines v1 of a helloworld API, which provides simple "greeting" methods.
@@ -80,7 +84,6 @@ public class Messages {
 	
 	@ApiMethod(name = "createMessage", httpMethod = "post", path = "messages/createMessage")
 	public Map createMessage(Message message) {
-		//Message m = new Message(message, postingUser, latitude, longitude, groupId, timePosted);
 		Key k = datastore.put(message.toEntity());
 		Map m = new HashMap<>();
 		if (k != null)
@@ -88,8 +91,6 @@ public class Messages {
 		else
 			m.put("succeeded", new Boolean(false));
 		return m;
-
-		//Logger.getGlobal().log(Level.SEVERE, "WORKING");
 	}
 	
 	@ApiMethod(name = "getAllMessages", httpMethod = "get", path = "messages/getAllMessages")
@@ -162,15 +163,6 @@ public class Messages {
 	
 	@ApiMethod(name = "checkPassword", httpMethod = "get", path = "accounts/checkPassword")
 	public Map<String, Boolean> checkPassword(@Named("username") String username, @Named("password") String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-		/*List<String> result = new ArrayList<String>();
-		Account account = getAccount(username);
-		if (account.getHashedPassword().equals(hashedPassword)) {
-			result.add("true");
-		} else {
-			result.add("false");
-		}
-		return result;*/
-
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
 		Query q = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
@@ -211,18 +203,6 @@ public class Messages {
 	
 	@ApiMethod(name = "createAccount", httpMethod = "get", path = "accounts/createAccount")
 	public Map createAccount(@Named("username") String username, @Named("password") String password) {
-		/*boolean taken = false;
-		for (Account account : accounts) {
-			if (account.getUsername().equals(username)) {
-				taken = true;
-			}
-		}
-		if (!(taken) && hashedPassword.length() > 0 && salt.length() > 0) {
-			Account account = new Account(username, hashedPassword, salt);
-			accounts.add(account);
-		} else {
-			throw new BadRequestException("username already exists");
-		}*/
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
 		Query q = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
@@ -261,14 +241,6 @@ public class Messages {
 	
 	@ApiMethod(name = "checkAccount", httpMethod = "get", path = "accounts/accountExists")
 	public Map<String, Boolean> accountExists(@Named("username") String username) {
-		/*List<String> result = new ArrayList<String>();
-		for (Account account : accounts) {
-			if (account.getUsername().equals(username)) {
-				result.add(account.getSalt());
-			}
-		}
-		return result;*/
-
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
 		Query q = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
@@ -401,17 +373,6 @@ public class Messages {
 	
 	@ApiMethod(name = "listGroups", httpMethod = "get", path = "groups/groupsForUser")
 	public List<Group> listGroups(@Named("username") String username) {
-		// just list groupId and groupName
-		//TODO
-		/*Account account = this.getAccount(username);
-		List<Group> userGroups = new ArrayList<Group>();
-		for (GroupMembership groupMembership : groupMemberships) {
-			if (groupMembership.getMemberId() == account.getId()) {
-				userGroups.addAll(this.getGroups(groupMembership.getGroupId()));
-			}
-		}
-		return userGroups;*/
-
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
 		Query q = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
