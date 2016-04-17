@@ -1,8 +1,9 @@
 package com.example.helloendpoints;
 
-import com.google.appengine.api.datastore.Entity;
-
 import java.util.Date;
+
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.GeoPt;
 
 public class Message {
 
@@ -10,8 +11,7 @@ public class Message {
 	public String message;
 	public String postingUser;
 	public long score;
-	public double latitude;
-	public double longitude;
+	public GeoPt location;
 	public long groupId;
 	public Date timePosted;
 
@@ -19,27 +19,25 @@ public class Message {
 
 	}
 	
-	public Message(String message, String postingUser, double latitude, double longitude) {
+	public Message(String message, String postingUser, float latitude, float longitude) {
 		new Message(message, postingUser, latitude, longitude, -1, new Date());
 	}
 	
-	public Message(String message, String postingUser, double latitude, double longitude, long groupId, Date timePosted) {
+	public Message(String message, String postingUser, float latitude, float longitude, long groupId, Date timePosted) {
 		this.message = message;
 		this.postingUser = postingUser;
 		this.score = 0;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.location = new GeoPt(latitude, longitude);
 		this.groupId = groupId;
 		this.timePosted = timePosted;
 	}
 
-	public Message(long id, String message, String postingUser, int score, double latitude, double longitude, long groupId, Date timePosted) {
+	public Message(long id, String message, String postingUser, int score, float latitude, float longitude, long groupId, Date timePosted) {
 		this.id = id;
 		this.message = message;
 		this.postingUser = postingUser;
 		this.score = score;
-		this.latitude = latitude;
-		this.longitude = longitude;
+		this.location = new GeoPt(latitude, longitude);
 		this.groupId = groupId;
 		this.timePosted = timePosted;
 	}
@@ -50,8 +48,7 @@ public class Message {
 			this.message = (String)e.getProperty("message");
 			this.postingUser = (String)e.getProperty("postingUser");
 			this.score = (long) e.getProperty("score");
-			this.latitude = (double)e.getProperty("latitude");
-			this.longitude = (double)e.getProperty("longitude");
+			this.location = (GeoPt) e.getProperty("location");
 			this.groupId = (long)e.getProperty("groupId");
 			this.timePosted = (Date)e.getProperty("timePosted");
 		}
@@ -65,8 +62,7 @@ public class Message {
 		e.setProperty("message", this.message);
 		e.setProperty("postingUser", this.postingUser);
 		e.setProperty("score", this.score);
-		e.setProperty("latitude", this.latitude);
-		e.setProperty("longitude", this.longitude);
+		e.setProperty("location", this.getLocation());
 		e.setProperty("groupId", this.getGroupId());
 		e.setProperty("timePosted", this.timePosted);
 		return e;
@@ -104,20 +100,12 @@ public class Message {
 		this.score = score;
 	}
 
-	public double getLatitude() {
-		return latitude;
+	public GeoPt getLocation() {
+		return location;
 	}
 
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
-	}
-
-	public double getLongitude() {
-		return longitude;
-	}
-
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
+	public void setLocation(GeoPt location) {
+		this.location = location;
 	}
 
 	public long getGroupId() {

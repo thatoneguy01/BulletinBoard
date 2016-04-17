@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
@@ -22,6 +23,8 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.GeoRegion.Circle;
+import com.google.appengine.api.datastore.Query.StContainsFilter;
 
 /**
  * Defines v1 of a helloworld API, which provides simple "greeting" methods.
@@ -85,9 +88,17 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "messagesNear", httpMethod = "get", path = "messages/messagesNear")
-	public List<Message> messagesNear() {
-		//TODO
-		return null;
+	public List<Message> messagesNear(@Named("latitude") float latitude, @Named("longitude") float longitude) {
+		List<Message> result = new ArrayList<Message>();
+		GeoPt center = new GeoPt(latitude, longitude);
+		double radius = 1000;
+		Filter f = new StContainsFilter("location", new Circle(center, radius));
+		Query q = new Query("Message").setFilter(f).addSort("timePosted", Query.SortDirection.DESCENDING);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		for (Entity e : results) {
+			result.add(new Message(e));
+		}
+		return result;
 	}
 	
 	@ApiMethod(name = "replies", httpMethod = "get", path = "replies/replies")
@@ -138,14 +149,15 @@ public class Messages {
 		Query q = new Query("Message").setFilter(filter).addSort("timePosted", Query.SortDirection.ASCENDING);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		if (!results.isEmpty()) {
-			List messages = new LinkedList();
-			for (Entity e : results)
+			List<Message> messages = new LinkedList<>();
+			for (Entity e : results) {
 				messages.add(new Message(e));
+			}
 			return messages;
 		}
 		else {
 			Logger.getGlobal().log(Level.SEVERE, "No Messages Found");
-			return new LinkedList<>();
+			return new LinkedList<Message>();
 		}
 	}
 	
@@ -357,9 +369,6 @@ public class Messages {
 	
 	@ApiMethod(name = "createGroup", httpMethod = "post", path = "groups/createGroup")
 	public Map<String, Boolean> createGroup(Group group) {
-		System.out.println();
-		System.out.println(group.getName() + " " + group.toEntity().getProperty("name"));
-		System.out.println();
 		Key k = datastore.put(group.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		if (k != null) {
@@ -420,11 +429,11 @@ public class Messages {
 //	}
 
 	@ApiMethod(name = "newGroup", httpMethod = "post", path = "groups/newGroup")
-	public Map<String, Boolean> newGroup(@Named("name") String name, MemberList memberNames) {
+	public Map<String, Boolean> newGroup(@Named("name") String name, @Named("memberNames") List<String> memberNames) {
 		Group g = new Group(name);
 		Key k = datastore.put(g.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		Filter filter = new FilterPredicate("username", FilterOperator.IN, memberNames.memberNames);
+		Filter filter = new FilterPredicate("username", FilterOperator.IN, memberNames);
 		Query q1 = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q1).asList(FetchOptions.Builder.withDefaults());
 		if (!results.isEmpty()) {
@@ -487,6 +496,7 @@ public class Messages {
 		return groups;
 	}
 	
+	// TODO always returns empty list
 	@ApiMethod(name = "listGroups", httpMethod = "get", path = "groups/groupsForUser")
 	public List<Group> listGroups(@Named("username") String username) {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
