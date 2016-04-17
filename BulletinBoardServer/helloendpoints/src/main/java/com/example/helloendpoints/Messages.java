@@ -4,11 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +44,8 @@ public class Messages {
 	
 	@ApiMethod(name = "createMessage", httpMethod = "post", path = "messages/createMessage")
 	public Map<String, Boolean> createMessage(Message message) {
+		if (message.timePosted == null)
+			message.timePosted = new Date();
 		Key k = datastore.put(message.toEntity());
 		Map<String, Boolean> m = new HashMap<String, Boolean>();
 		if (k != null) {
@@ -137,7 +135,7 @@ public class Messages {
 	@ApiMethod(name = "messagesForUser", httpMethod = "get", path = "messages/messagesForUser")
 	public List<Message> messageForUser(@Named("username") String username) {
 		Filter filter = new FilterPredicate("postingUser", FilterOperator.EQUAL, username);
-		Query q = new Query("Message").setFilter(filter);
+		Query q = new Query("Message").setFilter(filter).addSort("timePosted", Query.SortDirection.ASCENDING);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		if (!results.isEmpty()) {
 			List messages = new LinkedList();
