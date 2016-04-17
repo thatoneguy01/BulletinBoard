@@ -38,6 +38,7 @@
 		65DBF1411CC1F1A600D8A23D /* YourGroupsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1401CC1F1A600D8A23D /* YourGroupsTableViewController.m */; };
 		65DBF1441CC1F1BE00D8A23D /* NewGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1431CC1F1BE00D8A23D /* NewGroupViewController.m */; };
 		65DBF1491CC2DDC000D8A23D /* YourMessagesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1481CC2DDC000D8A23D /* YourMessagesTableViewCell.m */; };
+		65DBF14F1CC30C6A00D8A23D /* ModifyMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF14E1CC30C6A00D8A23D /* ModifyMessageViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,6 +117,8 @@
 		65DBF1431CC1F1BE00D8A23D /* NewGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewGroupViewController.m; sourceTree = "<group>"; };
 		65DBF1471CC2DDC000D8A23D /* YourMessagesTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YourMessagesTableViewCell.h; sourceTree = "<group>"; };
 		65DBF1481CC2DDC000D8A23D /* YourMessagesTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YourMessagesTableViewCell.m; sourceTree = "<group>"; };
+		65DBF14D1CC30C6A00D8A23D /* ModifyMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModifyMessageViewController.h; sourceTree = "<group>"; };
+		65DBF14E1CC30C6A00D8A23D /* ModifyMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModifyMessageViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -286,6 +289,8 @@
 				65DBF1401CC1F1A600D8A23D /* YourGroupsTableViewController.m */,
 				65DBF1421CC1F1BE00D8A23D /* NewGroupViewController.h */,
 				65DBF1431CC1F1BE00D8A23D /* NewGroupViewController.m */,
+				65DBF14D1CC30C6A00D8A23D /* ModifyMessageViewController.h */,
+				65DBF14E1CC30C6A00D8A23D /* ModifyMessageViewController.m */,
 			);
 			name = Settings;
 			sourceTree = "<group>";
@@ -431,6 +436,7 @@
 			files = (
 				6540DC741CBCAA080077F0A8 /* Group.m in Sources */,
 				65B7CFD91C94F964000EEAE3 /* ReplyTableViewController.m in Sources */,
+				65DBF14F1CC30C6A00D8A23D /* ModifyMessageViewController.m in Sources */,
 				65C0FB9F1C76564300B9183D /* AppDelegate.m in Sources */,
 				65DBF1381CC1EC6700D8A23D /* SettingsViewController.m in Sources */,
 				65B7CFDC1C94FB88000EEAE3 /* MessageTableViewCell.m in Sources */,

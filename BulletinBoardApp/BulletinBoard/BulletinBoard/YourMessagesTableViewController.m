@@ -8,6 +8,8 @@
 
 #import "YourMessagesTableViewController.h"
 #import "YourMessagesTableViewCell.h"
+#import "ModifyMessageViewController.h"
+#import "Constants.h"
 
 @interface YourMessagesTableViewController ()
 
@@ -52,6 +54,16 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    ModifyMessageViewController* modify = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"modify"];
+    modify.message = [_messages objectAtIndex:indexPath.row];
+    UIPopoverPresentationController* popper = [modify popoverPresentationController];
+    modify.modalPresentationStyle = UIModalPresentationPopover;
+    popper.sourceView = self.view;
+    popper.sourceRect = CGRectMake(30, 50, 200, 400);
+    [self presentViewController:modify animated:true completion:nil];
+}
+
 
 
 // Override to support conditional editing of the table view.
@@ -68,7 +80,7 @@
         // Delete the row from the data source
         Message* m = [_messages objectAtIndex:indexPath.row];
         [_messages delete:m];
-        NSString* urlString = [NSString stringWithFormat:@"%@accounts/groupsForUser?username=%@", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"]];
+        NSString* urlString = [NSString stringWithFormat:@"%@accounts/deleteMessage?messageId=%lld", API_DOMAIN, [(Message*)[_messages objectAtIndex:indexPath.row] mId]];
         NSURL* url = [NSURL URLWithString:urlString];
         NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
         [request setHTTPMethod:@"GET"];
@@ -77,8 +89,8 @@
         //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
         NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
         NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-            NSError* jsonError;
-            NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+        }];
+        [getTask resume];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view

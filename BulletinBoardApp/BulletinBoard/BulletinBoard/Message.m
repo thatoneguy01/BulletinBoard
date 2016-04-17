@@ -20,6 +20,7 @@
 
 -(instancetype)initWithDict: (NSDictionary*)dict {
     self = [super init];
+    _mId = [dict objectForKey:@"id"];
     _message = [dict objectForKey:@"message"];
     _postingUser = [dict objectForKey:@"postingUser"];
     _lat = [dict objectForKey:@"latitude"];
@@ -45,7 +46,7 @@
                           _score, @"score",
                           _groupId, @"groupId",
                           time, @"timePosted",
-                          0, "id", nil];
+                          _mId, "id", nil];
     return temp;
 }
 

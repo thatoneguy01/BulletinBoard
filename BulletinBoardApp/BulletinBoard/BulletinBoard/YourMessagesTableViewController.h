@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface YourMessagesTableViewController : UITableViewController
+@interface YourMessagesTableViewController : UITableViewController <UIPopoverControllerDelegate>
 
 @property (strong, nonatomic) NSArray* messages;
 

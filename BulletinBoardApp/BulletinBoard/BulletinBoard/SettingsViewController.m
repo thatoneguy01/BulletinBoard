@@ -48,6 +48,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)display: (NSArray*) messages {
+    YourMessagesTableViewController* dest = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"yourMessages"];
+    dest.messages = messages;
+    [self.navigationController pushViewController:dest animated:true];
+    [_spinner removeFromSuperview];
+}
+
 -(IBAction)getUserMessages:(id)sender {
     NSString* urlString = [NSString stringWithFormat:@"%@accounts/messagesForUser?username=%@", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"]];
     NSURL* url = [NSURL URLWithString:urlString];
@@ -58,6 +65,7 @@
     //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
     NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
     NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSLog(@"RESPONCE RECIEVED");
         NSError* jsonError;
         NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
         NSArray* messageDicts = [responseContent objectForKey:@"items"];
@@ -65,10 +73,8 @@
         for (NSDictionary* dict in messageDicts) {
             [messages addObject:[[Message alloc] initWithDict:dict]];
         }
-        YourMessagesTableViewController* dest = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"yourMessages"];
-        dest.messages = messages;
-        [self.navigationController pushViewController:dest animated:true];
-        [_spinner removeFromSuperview];
+        [self performSelectorOnMainThread:@selector(display) withObject:messages waitUntilDone:true];
+        
 }];
     [getTask resume];
     [_spinner startAnimating];

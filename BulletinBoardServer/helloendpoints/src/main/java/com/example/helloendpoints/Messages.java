@@ -171,14 +171,14 @@ public class Messages {
 		return result;
 	}
 	
-	@ApiMethod(name = "messageForUser", httpMethod = "get", path = "messages/messagesForUser")
+	@ApiMethod(name = "messagesForUser", httpMethod = "get", path = "messages/messagesForUser")
 	public List<Message> messageForUser(@Named("username") String username) {
 		//TODO
 		return null;
 	}
 	
 	@ApiMethod(name = "modifyMessage", httpMethod = "post", path = "messages/modifyMessage")
-	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, @Named("modifiedMessage") String modifiedMessage) {
+	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, String modifiedMessage) {
 		Key messageIdKey = KeyFactory.createKey("Message", messageId);
 		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
 		Query q = new Query("Message").setFilter(filter);

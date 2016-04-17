@@ -10,6 +10,7 @@
 
 @interface Message : NSObject
 
+@property long long mId;
 @property NSString* message;
 @property NSString* postingUser;
 @property int score;
