@@ -151,7 +151,7 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "modifyMessage", httpMethod = "post", path = "messages/modifyMessage")
-	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, String modifiedMessage) {
+	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, @Named("modifiedMessage") String modifiedMessage) {
 		Key messageIdKey = KeyFactory.createKey("Message", messageId);
 		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
 		Query q = new Query("Message").setFilter(filter);
@@ -421,7 +421,7 @@ public class Messages {
 //	}
 
 	@ApiMethod(name = "newGroup", httpMethod = "post", path = "groups/newGroup")
-	public Map<String, Boolean> newGroup(@Named("name") String name, List<Long> memberIds) {
+	public Map<String, Boolean> newGroup(@Named("name") String name, @Named("memberIds") List<Long> memberIds) {
 		Group g = new Group(name);
 		Key k = datastore.put(g.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
