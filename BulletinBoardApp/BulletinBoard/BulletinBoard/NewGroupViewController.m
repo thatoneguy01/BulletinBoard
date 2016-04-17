@@ -40,7 +40,7 @@
     NSString* memberString = _members.text;
     NSArray *members = [memberString componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     members = [members filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF != ''"]];
-    NSString* urlString = [NSString stringWithFormat:@"%@groups/createGroup?name=%@", API_DOMAIN, groupName];
+    NSString* urlString = [NSString stringWithFormat:@"%@groups/newGroup?name=%@", API_DOMAIN, groupName];
     NSURL* url = [NSURL URLWithString:urlString];
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"POST"];
