@@ -137,17 +137,16 @@ public class Messages {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
 		Query q = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		List<Message> messages = new ArrayList<Message>();
 		if (!results.isEmpty()) {
 			filter = new FilterPredicate("postingUser", FilterOperator.EQUAL, results.get(0).getKey().getId());
 			q = new Query("Message").setFilter(filter);
 			results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-			List messages = new LinkedList();
-			for (Entity e : results)
+			for (Entity e : results) {
 				messages.add(new Message(e));
-			return messages;
+			}
 		}
-		else
-			return new LinkedList<>();
+		return messages;
 	}
 	
 	@ApiMethod(name = "modifyMessage", httpMethod = "post", path = "messages/modifyMessage")
@@ -358,9 +357,6 @@ public class Messages {
 	
 	@ApiMethod(name = "createGroup", httpMethod = "post", path = "groups/createGroup")
 	public Map<String, Boolean> createGroup(Group group) {
-		System.out.println();
-		System.out.println(group.getName() + " " + group.toEntity().getProperty("name"));
-		System.out.println();
 		Key k = datastore.put(group.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		if (k != null) {
@@ -429,6 +425,7 @@ public class Messages {
 			GroupMembership groupMembership = new GroupMembership(k.getId(), memberId);
 			datastore.put(groupMembership.toEntity());
 		}
+		result.put("succeeded", new Boolean(true));
 		return result;
 	}
 	
@@ -498,6 +495,11 @@ public class Messages {
 				groupIds.add(e.getKey().getId());
 			}
 			filter = new FilterPredicate("ID", FilterOperator.IN, groupIds);
+//			List<Key> keys = new ArrayList<Key>();
+//			for (Long id : groupIds) {
+//				keys.add(KeyFactory.createKey("Group", id));
+//			}
+//			filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.IN, keys);
 			q = new Query("Group").setFilter(filter).addSort("name", Query.SortDirection.ASCENDING);
 			results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		}
