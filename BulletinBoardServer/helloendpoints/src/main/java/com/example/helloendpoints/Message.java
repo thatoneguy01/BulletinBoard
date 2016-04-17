@@ -55,8 +55,8 @@ public class Message {
 			this.groupId = (long)e.getProperty("groupId");
 			this.timePosted = (Date)e.getProperty("timePosted");
 		}
-		catch (Exception e1) {
-			e1.printStackTrace();
+		catch (Exception exception) {
+			exception.printStackTrace();
 		}
 	}
 

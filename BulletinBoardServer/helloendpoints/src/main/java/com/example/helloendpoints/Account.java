@@ -1,12 +1,11 @@
 package com.example.helloendpoints;
 
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
 
 public class Account {
 
 	public long id;
-	public Key key;
+//	public Key key;
 	public String username;
 	public String hashedPassword;
 	public String salt;
@@ -31,16 +30,15 @@ public class Account {
 
 	public Account(Entity e) {
 		try {
+			this.id = e.getKey().getId();
 			this.username = (String) e.getProperty("username");
 			this.hashedPassword = (String) e.getProperty("hashedPassword");
 			this.salt = (String) e.getProperty("salt");
 			this.clientID = (String) e.getProperty("clientId");
 			this.social = (long) e.getProperty("social");
-			this.key = e.getKey();
-			this.id = this.key.getId();
 		}
-		catch (NullPointerException e1) {
-			e1.printStackTrace();
+		catch (NullPointerException exception) {
+			exception.printStackTrace();
 		}
 	}
 

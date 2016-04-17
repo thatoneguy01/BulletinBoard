@@ -16,11 +16,11 @@ public class GroupMembership {
 	public GroupMembership(Entity e) {
 		try {
 			this.id = e.getKey().getId();
-			this.groupId = (long)e.getProperty("groupId");
-			this.memberId = (long)e.getProperty("memberId");
+			this.groupId = (long) e.getProperty("groupId");
+			this.memberId = (long) e.getProperty("memberId");
 		}
-		catch (Exception e1) {
-			e1.printStackTrace();
+		catch (Exception exception) {
+			exception.printStackTrace();
 		}
 	}
 
