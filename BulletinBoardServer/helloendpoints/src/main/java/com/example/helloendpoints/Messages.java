@@ -140,14 +140,15 @@ public class Messages {
 		Query q = new Query("Message").setFilter(filter);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		if (!results.isEmpty()) {
-			List messages = new LinkedList();
-			for (Entity e : results)
+			List<Message> messages = new LinkedList<>();
+			for (Entity e : results) {
 				messages.add(new Message(e));
+			}
 			return messages;
 		}
 		else {
 			Logger.getGlobal().log(Level.SEVERE, "No Messages Found");
-			return new LinkedList<>();
+			return new LinkedList<Message>();
 		}
 	}
 	
@@ -359,9 +360,6 @@ public class Messages {
 	
 	@ApiMethod(name = "createGroup", httpMethod = "post", path = "groups/createGroup")
 	public Map<String, Boolean> createGroup(Group group) {
-		System.out.println();
-		System.out.println(group.getName() + " " + group.toEntity().getProperty("name"));
-		System.out.println();
 		Key k = datastore.put(group.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		if (k != null) {
@@ -422,11 +420,11 @@ public class Messages {
 //	}
 
 	@ApiMethod(name = "newGroup", httpMethod = "post", path = "groups/newGroup")
-	public Map<String, Boolean> newGroup(@Named("name") String name, MemberList memberNames) {
+	public Map<String, Boolean> newGroup(@Named("name") String name, @Named("memberNames") List<String> memberNames) {
 		Group g = new Group(name);
 		Key k = datastore.put(g.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		Filter filter = new FilterPredicate("username", FilterOperator.IN, memberNames.memberNames);
+		Filter filter = new FilterPredicate("username", FilterOperator.IN, memberNames);
 		Query q1 = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q1).asList(FetchOptions.Builder.withDefaults());
 		if (!results.isEmpty()) {
