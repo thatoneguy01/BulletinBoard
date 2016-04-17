@@ -44,7 +44,10 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"yourMessageCell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ymCell"];
+    if (cell == nil) {
+        cell = [[YourMessagesTableViewCell alloc] init];
+    }
     YourMessagesTableViewCell* mCell = (YourMessagesTableViewCell*)cell;
     mCell.message = [_messages objectAtIndex:indexPath.row];
     mCell.messagePreview.text = mCell.message.message;
@@ -57,11 +60,23 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     ModifyMessageViewController* modify = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"modify"];
     modify.message = [_messages objectAtIndex:indexPath.row];
+    modify.presenter = self;
+    modify.row = [NSNumber numberWithInteger:indexPath.row];
     UIPopoverPresentationController* popper = [modify popoverPresentationController];
     modify.modalPresentationStyle = UIModalPresentationPopover;
     popper.sourceView = self.view;
     popper.sourceRect = CGRectMake(30, 50, 200, 400);
     [self presentViewController:modify animated:true completion:nil];
+}
+
+-(void)modifyMessage: (NSDictionary*) info{
+    NSLog(@"modifyMessage Called");
+    Message* m = [_messages objectAtIndex:[[info objectForKey:@"row"] integerValue]];
+    m.message = [info objectForKey:@"message"];
+    //[NSIndexPath indexPathForRow:[info objectForKey:@"row"] integerValue] inSection:1]
+    YourMessagesTableViewCell* mCell = (YourMessagesTableViewCell*)[self tableView:self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:[[info objectForKey:@"row"] integerValue] inSection:1]];
+    mCell.messagePreview.text = [info objectForKey:@"message"];
+    [self.tableView reloadData];
 }
 
 
@@ -79,8 +94,10 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
         Message* m = [_messages objectAtIndex:indexPath.row];
-        [_messages delete:m];
-        NSString* urlString = [NSString stringWithFormat:@"%@accounts/deleteMessage?messageId=%lld", API_DOMAIN, [(Message*)[_messages objectAtIndex:indexPath.row] mId]];
+        NSMutableArray* temp = [[NSMutableArray alloc] initWithArray:_messages];
+        [temp removeObject:m];
+        _messages = [NSArray arrayWithArray:temp];
+        NSString* urlString = [NSString stringWithFormat:@"%@messages/deleteMessage?messageId=%lld", API_DOMAIN, [m mId]];
         NSURL* url = [NSURL URLWithString:urlString];
         NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
         [request setHTTPMethod:@"GET"];

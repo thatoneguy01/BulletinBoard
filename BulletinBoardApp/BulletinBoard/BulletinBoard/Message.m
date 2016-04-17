@@ -20,7 +20,7 @@
 
 -(instancetype)initWithDict: (NSDictionary*)dict {
     self = [super init];
-    _mId = [dict objectForKey:@"id"];
+    _mId = [(NSNumber*)[dict objectForKey:@"id"] longLongValue];
     _message = [dict objectForKey:@"message"];
     _postingUser = [dict objectForKey:@"postingUser"];
     _lat = [dict objectForKey:@"latitude"];

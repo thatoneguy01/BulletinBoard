@@ -14,7 +14,7 @@
 
 @interface PostViewController ()
 
-@property (strong, nonatomic) IBOutlet UITextView* messageBox;
+//@property (strong, nonatomic) IBOutlet UITextView* messageBox;
 @property (strong, nonatomic) IBOutlet UISegmentedControl* privateSwitch;
 @property (strong, nonatomic) IBOutlet UITextField* privateGroup;
 @property (strong, nonatomic) IBOutlet UIButton* nextButton;
@@ -50,6 +50,14 @@
 
 -(IBAction)dismissKeyboard:(id)sender {
     [_messageBox resignFirstResponder];
+}
+
+-(void)clearForm {
+    _messageBox.text = @"";
+    if (_privateSwitch.selectedSegmentIndex == 1) {
+        _privateSwitch.selectedSegmentIndex = 0;
+        _grayView.hidden = false;
+    }
 }
 
 -(IBAction)togglePrivate:(id)sender {
@@ -91,6 +99,7 @@
     destination.message = [[Message alloc] initWithMessage:_messageBox.text];
     destination.message.postingUser = [[NSUserDefaults standardUserDefaults] stringForKey:@"username"];
     destination.message.score = 0;
+    destination.messageBox = _messageBox;
     NSDate * now = [NSDate date];
     destination.message.timePosted = now;
     if (_privateSwitch.selectedSegmentIndex == 0)

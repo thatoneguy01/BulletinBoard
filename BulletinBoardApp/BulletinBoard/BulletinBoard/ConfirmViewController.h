@@ -13,5 +13,6 @@
 @interface ConfirmViewController : UIViewController <MKMapViewDelegate>
 
 @property (strong, nonatomic) Message* message;
+@property (strong, nonatomic) UITextView* messageBox;
 
 @end

@@ -12,4 +12,6 @@
 
 @property (strong, nonatomic) NSArray* messages;
 
+-(void)modifyMessage: (NSDictionary*) info;
+
 @end

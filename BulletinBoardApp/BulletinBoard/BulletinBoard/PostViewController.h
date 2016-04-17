@@ -11,4 +11,9 @@
 
 @interface PostViewController : UIViewController <CLLocationManagerDelegate>
 
+@property (strong, nonatomic) IBOutlet UITextView* messageBox;
+
+
+-(void)clearForm;
+
 @end

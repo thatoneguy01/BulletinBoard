@@ -13,7 +13,6 @@
 
 @interface ModifyMessageViewController ()
 
-//@property (strong, nonatomic) YourMessagesTableViewController* presenter;
 @property (strong, nonatomic) IBOutlet UITextView* oldMessage;
 @property (strong, nonatomic) IBOutlet UITextView* modMessage;
 
@@ -34,19 +33,24 @@
 }
 
 -(IBAction)confirm:(id)sender {
-    NSString* urlString = [NSString stringWithFormat:@"%@messages/modifyMessage?messageId=%lld", API_DOMAIN, _message.mId];
+    //NSString* modMessage = [_modMessage.text stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString* modMessage = [_modMessage.text stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+    NSString* urlString = [NSString stringWithFormat:@"%@messages/modifyMessage?messageId=%lld&modifiedMessage=%@", API_DOMAIN, _message.mId, modMessage];
     NSURL* url = [NSURL URLWithString:urlString];
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
-    NSError* error;
-    NSDictionary* dict = [[NSDictionary alloc] initWithObjects:@[_modMessage.text] forKeys:@[@"modifiedMessage"]];
-    NSData* body = [NSJSONSerialization dataWithJSONObject:_modMessage.text options:0 error:&error];
-    [request setHTTPBody:body];
+    //NSError* error;
+    //NSDictionary* dict = [[NSDictionary alloc] initWithObjects:@[_modMessage.text] forKeys:@[@"modifiedMessage"]];
+    //NSData* body = [NSJSONSerialization dataWithJSONObject:_modMessage.text options:0 error:&error];
+    //[request setHTTPBody:body];
     NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
     NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
     NSURLSessionTask* postTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        if ([_presenter respondsToSelector:@selector(modifyMessage:)]) {
+            [_presenter performSelector:@selector(modifyMessage:) withObject:[[NSDictionary alloc] initWithObjects:@[_modMessage.text, _row] forKeys:@[@"message", @"row"]]];
+        }
         [self performSelectorOnMainThread:@selector(cancel:) withObject:nil waitUntilDone:true];
     }];
     [postTask resume];

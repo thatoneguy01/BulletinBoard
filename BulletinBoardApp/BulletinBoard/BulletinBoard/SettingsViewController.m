@@ -27,7 +27,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    _username.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"userame"];
+    _username.text = [[NSUserDefaults standardUserDefaults] stringForKey:@"username"];
     _spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(135,140,50,50)];
     _spinner.center = self.view.center;
     if ([FBSDKAccessToken currentAccessToken]) {
@@ -53,10 +53,11 @@
     dest.messages = messages;
     [self.navigationController pushViewController:dest animated:true];
     [_spinner removeFromSuperview];
+    self.view.userInteractionEnabled = true;
 }
 
 -(IBAction)getUserMessages:(id)sender {
-    NSString* urlString = [NSString stringWithFormat:@"%@accounts/messagesForUser?username=%@", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"]];
+    NSString* urlString = [NSString stringWithFormat:@"%@messages/messagesForUser?username=%@", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"]];
     NSURL* url = [NSURL URLWithString:urlString];
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"GET"];
@@ -73,11 +74,12 @@
         for (NSDictionary* dict in messageDicts) {
             [messages addObject:[[Message alloc] initWithDict:dict]];
         }
-        [self performSelectorOnMainThread:@selector(display) withObject:messages waitUntilDone:true];
+        [self performSelectorOnMainThread:@selector(display:) withObject:messages waitUntilDone:true];
         
 }];
     [getTask resume];
     [_spinner startAnimating];
+    self.view.userInteractionEnabled = false;
     [self.view addSubview:_spinner];
 }
 

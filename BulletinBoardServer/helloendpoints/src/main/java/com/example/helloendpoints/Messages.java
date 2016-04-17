@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -30,7 +32,7 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
  */
 @Api(
 		name = "helloworld",
-		version = "v3",
+		version = "v4",
 		scopes = {Constants.EMAIL_SCOPE},
 		clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID, Constants.API_EXPLORER_CLIENT_ID},
 		audiences = {Constants.ANDROID_AUDIENCE}
@@ -134,24 +136,23 @@ public class Messages {
 	
 	@ApiMethod(name = "messagesForUser", httpMethod = "get", path = "messages/messagesForUser")
 	public List<Message> messageForUser(@Named("username") String username) {
-		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
-		Query q = new Query("Account").setFilter(filter);
+		Filter filter = new FilterPredicate("postingUser", FilterOperator.EQUAL, username);
+		Query q = new Query("Message").setFilter(filter);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		if (!results.isEmpty()) {
-			filter = new FilterPredicate("postingUser", FilterOperator.EQUAL, results.get(0).getKey().getId());
-			q = new Query("Message").setFilter(filter);
-			results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			List messages = new LinkedList();
 			for (Entity e : results)
 				messages.add(new Message(e));
 			return messages;
 		}
-		else
+		else {
+			Logger.getGlobal().log(Level.SEVERE, "No Messages Found");
 			return new LinkedList<>();
+		}
 	}
 	
 	@ApiMethod(name = "modifyMessage", httpMethod = "post", path = "messages/modifyMessage")
-	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, String modifiedMessage) {
+	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, @Named("modifiedMessage")String modifiedMessage) {
 		Key messageIdKey = KeyFactory.createKey("Message", messageId);
 		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
 		Query q = new Query("Message").setFilter(filter);
@@ -372,7 +373,7 @@ public class Messages {
 	}
 	
 //	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/addToGroup")
-//	public Map<String, Boolean> addToGroup(@Named("groupName") String groupName, @Named("memberIds") List<Long> memberIds) {
+//	public Map<String, Boolean> addToGroup(@Named("groupName") String groupName, @Named("memberNames") List<Long> memberNames) {
 //		// TODO assuming group names are unique, another version is commented out below where this assumption is not made
 //		// and the first parameter is the groupid instead of the group name
 //		// get group id
@@ -386,14 +387,14 @@ public class Messages {
 //		} else {
 //			Entity e = results.get(0);
 //			int failedToAdd = 0;
-//			for (Long memberId : memberIds) {
+//			for (Long memberId : memberNames) {
 //				GroupMembership groupMembership = new GroupMembership(e.getKey().getId(), memberId);
 //				Key k = datastore.put(groupMembership.toEntity());
 //				if (k == null) {
 //					failedToAdd++;
 //				}
 //			}
-//			if (failedToAdd == memberIds.size()) {
+//			if (failedToAdd == memberNames.size()) {
 //				result.put("succeeded", new Boolean(false));
 //			} else {
 //				result.put("succeeded", new Boolean(true));
@@ -403,7 +404,7 @@ public class Messages {
 //	}
 	
 //	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/addToGroup")
-//	public Map<String, Boolean> addToGroup(@Named("groupId") long groupId, List<Long> memberIds) {
+//	public Map<String, Boolean> addToGroup(@Named("groupId") long groupId, List<Long> memberNames) {
 //		Filter filter = new FilterPredicate("id", FilterOperator.EQUAL, groupId);
 //		Query q = new Query("Group").setFilter(filter);
 //		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
@@ -412,7 +413,7 @@ public class Messages {
 //			result.put("succeeded", new Boolean(false));
 //		} else {
 //			Entity e = results.get(0);
-//			for (Long memberId : memberIds) {
+//			for (Long memberId : memberNames) {
 //				GroupMembership groupMembership = new GroupMembership(e.getKey().getId(), memberId);
 //				datastore.put(groupMembership.toEntity());
 //			}
@@ -421,13 +422,22 @@ public class Messages {
 //	}
 
 	@ApiMethod(name = "newGroup", httpMethod = "post", path = "groups/newGroup")
-	public Map<String, Boolean> newGroup(@Named("name") String name, List<Long> memberIds) {
+	public Map<String, Boolean> newGroup(@Named("name") String name, MemberList memberNames) {
 		Group g = new Group(name);
 		Key k = datastore.put(g.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		for (Long memberId : memberIds) {
-			GroupMembership groupMembership = new GroupMembership(k.getId(), memberId);
-			datastore.put(groupMembership.toEntity());
+		Filter filter = new FilterPredicate("username", FilterOperator.IN, memberNames.memberNames);
+		Query q1 = new Query("Account").setFilter(filter);
+		List<Entity> results = datastore.prepare(q1).asList(FetchOptions.Builder.withDefaults());
+		if (!results.isEmpty()) {
+			for (Entity e : results) {
+				GroupMembership gm = new GroupMembership(k.getId(), e.getKey().getId());
+				datastore.put(gm.toEntity());
+			}
+			result.put("succeeded", new Boolean(true));
+		}
+		else {
+			result.put("succeeded", new Boolean(false));
 		}
 		return result;
 	}

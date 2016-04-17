@@ -8,12 +8,14 @@
 
 #import "ConfirmViewController.h"
 #import "Constants.h"
+#import "PostViewController.h"
 @import CoreLocation;
 
 @interface ConfirmViewController ()
 
 @property (strong, nonatomic) IBOutlet MKMapView* locationMap;
 @property (strong, nonatomic) IBOutlet UIButton* confrimButton;
+@property (strong, nonatomic) UIActivityIndicatorView* spinner;
 
 @end
 
@@ -27,11 +29,29 @@
     MKCoordinateRegionMakeWithDistance (
                                         userLocation.location.coordinate, 1000, 1000);
     [_locationMap setRegion:region animated:NO];
+    _spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(135,140,50,50)];
+    _spinner.center = self.view.center;
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+-(void)dismiss {
+    [_spinner removeFromSuperview];
+    self.view.userInteractionEnabled = true;
+    _messageBox.text = @"";
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)fail {
+    [_spinner removeFromSuperview];
+    self.view.userInteractionEnabled = true;
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Failed to create message" message:@"Please try again." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(IBAction)postMessage:(id)sender {
@@ -52,13 +72,17 @@
     //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
     NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
     NSURLSessionTask* postTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (error)
-            NSLog(@"FAIL");
-        else
-            NSLog(@"NO FAIL");
+        if (error) {
+            [self performSelectorOnMainThread:@selector(fail) withObject:nil waitUntilDone:true];
+        }
+        else {
+            [self performSelectorOnMainThread:@selector(dismiss) withObject:nil waitUntilDone:true];
+        }
     }];
     [postTask resume];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [_spinner startAnimating];
+    self.view.userInteractionEnabled = false;
+    [self.view addSubview:_spinner];
 }
 
 #pragma mark - Navigation

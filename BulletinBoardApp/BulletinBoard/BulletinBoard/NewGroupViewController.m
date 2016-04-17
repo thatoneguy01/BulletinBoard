@@ -45,8 +45,10 @@
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+    NSMutableDictionary* temp = [[NSMutableDictionary alloc] init];
+    [temp setObject:members forKey:@"memberNames"];
     NSError* error;
-    NSData* body = [NSJSONSerialization dataWithJSONObject:members options:0 error:&error];
+    NSData* body = [NSJSONSerialization dataWithJSONObject:[NSDictionary dictionaryWithDictionary:temp] options:0 error:&error];
     [request setHTTPBody:body];
     NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
     //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
