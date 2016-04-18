@@ -33,6 +33,7 @@
 		65C0FBDA1C7F587300B9183D /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C0FBD91C7F587300B9183D /* Message.m */; };
 		65C0FBDD1C7F91CA00B9183D /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C0FBDC1C7F91CA00B9183D /* Constants.m */; };
 		65C0FBE01C7F9D8700B9183D /* KeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C0FBDF1C7F9D8700B9183D /* KeychainWrapper.m */; };
+		65C70BE51CC49CAE00B3AFC5 /* MessageMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = 65C70BE41CC49CAE00B3AFC5 /* MessageMarker.m */; };
 		65DBF1381CC1EC6700D8A23D /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1371CC1EC6700D8A23D /* SettingsViewController.m */; };
 		65DBF13B1CC1F0FF00D8A23D /* YourMessagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF13A1CC1F0FF00D8A23D /* YourMessagesTableViewController.m */; };
 		65DBF1411CC1F1A600D8A23D /* YourGroupsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1401CC1F1A600D8A23D /* YourGroupsTableViewController.m */; };
@@ -108,6 +109,8 @@
 		65C0FBDC1C7F91CA00B9183D /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
 		65C0FBDE1C7F9D8700B9183D /* KeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeychainWrapper.h; sourceTree = "<group>"; };
 		65C0FBDF1C7F9D8700B9183D /* KeychainWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KeychainWrapper.m; sourceTree = "<group>"; };
+		65C70BE31CC49CAE00B3AFC5 /* MessageMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageMarker.h; sourceTree = "<group>"; };
+		65C70BE41CC49CAE00B3AFC5 /* MessageMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageMarker.m; sourceTree = "<group>"; };
 		65DBF1361CC1EC6700D8A23D /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
 		65DBF1371CC1EC6700D8A23D /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
 		65DBF1391CC1F0FF00D8A23D /* YourMessagesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YourMessagesTableViewController.h; sourceTree = "<group>"; };
@@ -170,6 +173,8 @@
 				65C0FBD91C7F587300B9183D /* Message.m */,
 				6540DC721CBCAA080077F0A8 /* Group.h */,
 				6540DC731CBCAA080077F0A8 /* Group.m */,
+				65C70BE31CC49CAE00B3AFC5 /* MessageMarker.h */,
+				65C70BE41CC49CAE00B3AFC5 /* MessageMarker.m */,
 			);
 			name = "Model Objects";
 			sourceTree = "<group>";
@@ -248,6 +253,28 @@
 			path = BulletinBoardUITests;
 			sourceTree = "<group>";
 		};
+		65C70BE11CC499F800B3AFC5 /* Unused */ = {
+			isa = PBXGroup;
+			children = (
+				657A0C461C801DA50053576B /* MessageListTableViewController.h */,
+				657A0C471C801DA50053576B /* MessageListTableViewController.m */,
+				657A0C491C801E010053576B /* MessageMapViewController.h */,
+				657A0C4A1C801E010053576B /* MessageMapViewController.m */,
+			);
+			name = Unused;
+			sourceTree = "<group>";
+		};
+		65C70BE21CC49A0A00B3AFC5 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				65B7CFDD1C94FBB9000EEAE3 /* ReplyTableViewCell.h */,
+				65B7CFDE1C94FBB9000EEAE3 /* ReplyTableViewCell.m */,
+				65B7CFDA1C94FB88000EEAE3 /* MessageTableViewCell.h */,
+				65B7CFDB1C94FB88000EEAE3 /* MessageTableViewCell.m */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
 		65DBF13C1CC1F10500D8A23D /* Posting */ = {
 			isa = PBXGroup;
 			children = (
@@ -262,20 +289,14 @@
 		65DBF13D1CC1F11A00D8A23D /* Viewing */ = {
 			isa = PBXGroup;
 			children = (
+				65C70BE21CC49A0A00B3AFC5 /* Cells */,
+				65C70BE11CC499F800B3AFC5 /* Unused */,
 				657A0C431C8016250053576B /* ScanViewController.h */,
 				657A0C441C8016250053576B /* ScanViewController.m */,
-				657A0C461C801DA50053576B /* MessageListTableViewController.h */,
-				657A0C471C801DA50053576B /* MessageListTableViewController.m */,
-				657A0C491C801E010053576B /* MessageMapViewController.h */,
-				657A0C4A1C801E010053576B /* MessageMapViewController.m */,
 				65B7CFD41C94F8A6000EEAE3 /* ReplyViewController.h */,
 				65B7CFD51C94F8A6000EEAE3 /* ReplyViewController.m */,
 				65B7CFD71C94F964000EEAE3 /* ReplyTableViewController.h */,
 				65B7CFD81C94F964000EEAE3 /* ReplyTableViewController.m */,
-				65B7CFDA1C94FB88000EEAE3 /* MessageTableViewCell.h */,
-				65B7CFDB1C94FB88000EEAE3 /* MessageTableViewCell.m */,
-				65B7CFDD1C94FBB9000EEAE3 /* ReplyTableViewCell.h */,
-				65B7CFDE1C94FBB9000EEAE3 /* ReplyTableViewCell.m */,
 			);
 			name = Viewing;
 			sourceTree = "<group>";
@@ -452,6 +473,7 @@
 				657A0C451C8016250053576B /* ScanViewController.m in Sources */,
 				65C0FB9C1C76564300B9183D /* main.m in Sources */,
 				657A0C4B1C801E010053576B /* MessageMapViewController.m in Sources */,
+				65C70BE51CC49CAE00B3AFC5 /* MessageMarker.m in Sources */,
 				65C0FBE01C7F9D8700B9183D /* KeychainWrapper.m in Sources */,
 				6503A5C91C86285500ED99E1 /* LoginViewController.m in Sources */,
 				65DBF13B1CC1F0FF00D8A23D /* YourMessagesTableViewController.m in Sources */,

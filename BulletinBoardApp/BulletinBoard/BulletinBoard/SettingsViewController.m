@@ -48,9 +48,17 @@
     // Dispose of any resources that can be recreated.
 }
 
--(void)display: (NSArray*) messages {
+-(void)displayMessages: (NSArray*) messages {
     YourMessagesTableViewController* dest = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"yourMessages"];
     dest.messages = messages;
+    [self.navigationController pushViewController:dest animated:true];
+    [_spinner removeFromSuperview];
+    self.view.userInteractionEnabled = true;
+}
+
+-(void)displayGroups: (NSArray*) groups {
+    YourGroupsTableViewController* dest = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"yourGroups"];
+    dest.groups = groups;
     [self.navigationController pushViewController:dest animated:true];
     [_spinner removeFromSuperview];
     self.view.userInteractionEnabled = true;
@@ -74,7 +82,7 @@
         for (NSDictionary* dict in messageDicts) {
             [messages addObject:[[Message alloc] initWithDict:dict]];
         }
-        [self performSelectorOnMainThread:@selector(display:) withObject:messages waitUntilDone:true];
+        [self performSelectorOnMainThread:@selector(displayMessages:) withObject:messages waitUntilDone:true];
         
 }];
     [getTask resume];
@@ -100,13 +108,11 @@
         for (NSDictionary* dict in groupDicts) {
             [groups addObject:[[Group alloc] initWithDict:dict]];
         }
-        YourGroupsTableViewController* dest = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"yourGroups"];
-        dest.groups = groups;
-        [self.navigationController pushViewController:dest animated:true];
-        [_spinner removeFromSuperview];
+        [self performSelectorOnMainThread:@selector(displayGroups:) withObject:groups waitUntilDone:true];
     }];
     [getTask resume];
     [_spinner startAnimating];
+    self.view.userInteractionEnabled = false;
     [self.view addSubview:_spinner];
 }
 

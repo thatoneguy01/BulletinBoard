@@ -38,10 +38,37 @@
     _grayView = [[UIView alloc] initWithFrame:[_groupSelectorContainer bounds]];
     _grayView.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.5];
     [_groupSelectorContainer addSubview:_grayView];
+    _privateGroup.delegate = self;
+    NSString* username = [[NSUserDefaults standardUserDefaults] objectForKey:@"username"];
+    NSString* urlString = [NSString stringWithFormat:@"%@groups/groupsForUser?username=%@", API_DOMAIN, username];
+    NSURL* url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+    NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
+    NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
+    NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        NSError* jsonError;
+        NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+        NSArray* groups = [responseContent objectForKey:@"items"];
+        NSMutableArray* groupList = [[NSMutableArray alloc] init];
+        for (NSDictionary* dict in groups) {
+            Group* g = [[Group alloc] initWithDict:dict];
+            [groupList addObject:g];
+        }
+        _userGroups = [groupList sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+            Group* g1 = (Group*)obj1;
+            Group* g2 = (Group*)obj2;
+            return [g1.name compare:g2.name];
+        }];
+    }
+                                 ];
+    [getTask resume];
     [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)]];
     _picker = [[UIPickerView alloc] init];
     _picker.delegate = self;
-    _picker.hidden = true;
+    //_picker.hidden = true;
     _privateGroup.delegate = self;
     _privateGroup.inputView = _picker;
 }
@@ -67,7 +94,7 @@
     if (_privateSwitch.selectedSegmentIndex == 1) {
         _grayView.hidden = true;
         NSString* username = [[NSUserDefaults standardUserDefaults] objectForKey:@"username"];
-        NSString* urlString = [NSString stringWithFormat:@"%@groups/listGroups?username=%@", API_DOMAIN, username];
+        NSString* urlString = [NSString stringWithFormat:@"%@groups/groupsForUser?username=%@", API_DOMAIN, username];
         NSURL* url = [NSURL URLWithString:urlString];
         NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
         [request setHTTPMethod:@"GET"];
@@ -84,8 +111,11 @@
                 Group* g = [[Group alloc] initWithDict:dict];
                 [groupList addObject:g];
             }
-            _userGroups = [groupList sortedArrayUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-        }
+            _userGroups = [groupList sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                Group* g1 = (Group*)obj1;
+                Group* g2 = (Group*)obj2;
+                return [g1.name compare:g2.name];
+            }];        }
                                      ];
         [getTask resume];
     }
@@ -97,24 +127,29 @@
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
     _privateGroup.text = [(Group*)_userGroups[row] name];
     _index = row;
-    _picker.hidden = true;
+    //_picker.hidden = true;
+    [self dismissKeyboard:_privateGroup];
 }
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
-    return _userGroups[row];
+    return [(Group*)_userGroups[row] name];
 }
 
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return 1;
-}
-
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
     return _userGroups.count;
 }
 
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return 1;
+}
+
 -(void)textFieldDidBeginEditing:(UITextField *)textField {
-    _picker.hidden = false;
+    //_picker.hidden = false;
     
+}
+
+-(BOOL) textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    return false;
 }
 
 #pragma mark - Navigation
@@ -133,6 +168,18 @@
     else {
         destination.message.groupId = ((Group*)[_userGroups objectAtIndex:_index]).groupId;
         }
+}
+
+-(BOOL) shouldPerformSegueWithIdentifier:(NSString *)identifier sender:(id)sender {
+    if (_privateSwitch.selectedSegmentIndex == 1 && [_privateGroup.text isEqualToString:@""]) {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"Please Select a group" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        return false;
+    }
+    else
+        return true;
 }
 
 @end

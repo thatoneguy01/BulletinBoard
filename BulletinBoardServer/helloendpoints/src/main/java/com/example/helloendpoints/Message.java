@@ -12,32 +12,23 @@ public class Message {
 	public String postingUser;
 	public long score;
 	public GeoPt location;
+	public float latitude;
+	public float longitude;
 	public long groupId;
 	public Date timePosted;
 
 	public Message() {
 
 	}
-	
-	public Message(String message, String postingUser, float latitude, float longitude) {
-		new Message(message, postingUser, latitude, longitude, -1, new Date());
-	}
-	
-	public Message(String message, String postingUser, float latitude, float longitude, long groupId, Date timePosted) {
-		this.message = message;
-		this.postingUser = postingUser;
-		this.score = 0;
-		this.location = new GeoPt(latitude, longitude);
-		this.groupId = groupId;
-		this.timePosted = timePosted;
-	}
 
-	public Message(long id, String message, String postingUser, int score, float latitude, float longitude, long groupId, Date timePosted) {
+	public Message(long id, String message, String postingUser, long score, GeoPt location, float latitude, float longitude, long groupId, Date timePosted) {
 		this.id = id;
 		this.message = message;
 		this.postingUser = postingUser;
 		this.score = score;
-		this.location = new GeoPt(latitude, longitude);
+		this.location = location;
+		this.latitude = latitude;
+		this.longitude = longitude;
 		this.groupId = groupId;
 		this.timePosted = timePosted;
 	}

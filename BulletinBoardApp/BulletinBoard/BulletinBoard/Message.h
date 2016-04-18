@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MessageMarker.h"
 
 @interface Message : NSObject
 
@@ -14,7 +15,7 @@
 @property NSString* message;
 @property NSString* postingUser;
 @property int score;
-@property NSString* location;
+//@property CLLocationCoordinate2D location;
 @property NSNumber* lat;
 @property NSNumber* lon;
 @property long long groupId;
@@ -23,5 +24,6 @@
 -(instancetype)initWithMessage:(NSString*)message;
 -(instancetype)initWithDict: (NSDictionary*)dic;
 -(NSDictionary*)toDict;
+-(MessageMarker*)toMarker;
 
 @end

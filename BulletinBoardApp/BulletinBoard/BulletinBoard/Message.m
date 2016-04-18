@@ -7,6 +7,7 @@
 //
 
 #import "Message.h"
+#import "MessageMarker.h"
 
 @implementation Message
 
@@ -23,6 +24,7 @@
     _mId = [(NSNumber*)[dict objectForKey:@"id"] longLongValue];
     _message = [dict objectForKey:@"message"];
     _postingUser = [dict objectForKey:@"postingUser"];
+    //_location = CLLocationCoordinate2DMake([(NSNumber*)[dict objectForKey:@"latitude"] floatValue], [(NSNumber*)[dict objectForKey:@"longitude"] floatValue]);
     _lat = [dict objectForKey:@"latitude"];
     _lon = [dict objectForKey:@"longitude"];
     _score = [(NSNumber*)[dict objectForKey:@"score"] intValue];
@@ -48,6 +50,14 @@
                           time, @"timePosted",
                           _mId, "id", nil];
     return temp;
+}
+
+-(MessageMarker*)toMarker {
+    MessageMarker* m = [[MessageMarker alloc] init];
+    m.title = self.message;
+    m.subtitle = self.postingUser;
+    m.coordinate = CLLocationCoordinate2DMake([self.lat doubleValue], [self.lon doubleValue]);
+    return m;
 }
 
 @end

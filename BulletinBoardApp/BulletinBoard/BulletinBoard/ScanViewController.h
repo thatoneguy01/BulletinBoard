@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <MapKit/MapKit.h>
 
-@interface ScanViewController : UIViewController
+@interface ScanViewController : UIViewController <MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource>
+
+@property (strong, nonatomic) IBOutlet MKMapView* mapView;
+@property (strong, nonatomic) IBOutlet UITableView* tableView;
 
 @end

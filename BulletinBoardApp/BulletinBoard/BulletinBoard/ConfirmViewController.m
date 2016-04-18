@@ -23,13 +23,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _locationMap.delegate = self;
     _locationMap.showsUserLocation = YES;
-    MKUserLocation *userLocation = _locationMap.userLocation;
-    MKCoordinateRegion region =
-    MKCoordinateRegionMakeWithDistance (
-                                        userLocation.location.coordinate, 1000, 1000);
-    [_locationMap setRegion:region animated:NO];
-    _spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(135,140,50,50)];
+    double latitude = _locationMap.userLocation.coordinate.latitude;
+    float delta = fabs(200 / (111111 * cos(latitude)));
+    [self.locationMap setRegion:MKCoordinateRegionMake(_locationMap.userLocation.coordinate, MKCoordinateSpanMake(.0018f, delta)) animated:false];
+    _spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(135,140,100,100)];
     _spinner.center = self.view.center;
 }
 
@@ -60,6 +59,7 @@
     NSString* lon = [NSString stringWithFormat:@"%f", currentLoc.location.coordinate.longitude];
     _message.lat = [[NSNumber alloc] initWithDouble:[lat doubleValue]];
     _message.lon = [[NSNumber alloc] initWithDouble:[lon doubleValue]];
+    //_message.location = CLLocationCoordinate2DMake([_message.lat floatValue], [_message.lon floatValue]);
     NSString* urlString = [NSString stringWithFormat:@"%@messages/createMessage", API_DOMAIN];
     NSURL* url = [NSURL URLWithString:urlString];
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
@@ -85,6 +85,13 @@
     [self.view addSubview:_spinner];
 }
 
+#pragma mark - MKMapViewDelegate
+
+-(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
+    double latitude = userLocation.coordinate.latitude;
+    float delta = fabs(200 / (111111 * cos(latitude)));
+    [self.locationMap setRegion:MKCoordinateRegionMake(userLocation.coordinate, MKCoordinateSpanMake(.0018f, delta)) animated:false];
+}
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation

@@ -7,11 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Message.h"
 
 @interface MessageTableViewCell : UITableViewCell
 
 @property (strong, nonatomic) IBOutlet UIImageView* userImageView;
 @property (strong, nonatomic) IBOutlet UILabel* usernameLabel;
 @property (strong, nonatomic) IBOutlet UITextView* messageText;
+
+@property (strong, nonatomic) Message* message;
 
 @end

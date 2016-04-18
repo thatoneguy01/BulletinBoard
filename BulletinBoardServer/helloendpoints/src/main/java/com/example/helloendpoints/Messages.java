@@ -50,6 +50,7 @@ public class Messages {
 	public Map<String, Boolean> createMessage(Message message) {
 		if (message.timePosted == null)
 			message.timePosted = new Date();
+		message.location = new GeoPt(message.latitude, message.longitude);
 		Key k = datastore.put(message.toEntity());
 		Map<String, Boolean> m = new HashMap<String, Boolean>();
 		if (k != null) {
