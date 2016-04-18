@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 @import CoreLocation;
 
-@interface PostViewController : UIViewController <CLLocationManagerDelegate>
+@interface PostViewController : UIViewController <CLLocationManagerDelegate, UITextFieldDelegate, UIPickerViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UITextView* messageBox;
 

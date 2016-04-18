@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.config.Nullable;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -88,12 +89,30 @@ public class Messages {
 	}
 	
 	@ApiMethod(name = "messagesNear", httpMethod = "get", path = "messages/messagesNear")
-	public List<Message> messagesNear(@Named("latitude") float latitude, @Named("longitude") float longitude) {
+	public List<Message> messagesNear(@Named("username") @Nullable String username, @Named("latitude") float latitude, @Named("longitude") float longitude) {
 		List<Message> result = new ArrayList<Message>();
 		GeoPt center = new GeoPt(latitude, longitude);
 		double radius = 1000;
-		Filter f = new StContainsFilter("location", new Circle(center, radius));
-		Query q = new Query("Message").setFilter(f).addSort("timePosted", Query.SortDirection.DESCENDING);
+		Filter f1 = new StContainsFilter("location", new Circle(center, radius));
+		Filter filter = null;
+		if (username != null) {
+			List<Group> groups = listGroups(username);
+			List<Long> groupIds = new LinkedList<>();
+			for (Group g : groups) {
+				groupIds.add(g.id);
+			}
+			groupIds.add(new Long(-1));
+			Filter f2 = new FilterPredicate("groupId", FilterOperator.IN, groupIds);
+			List<Filter> filterList = new ArrayList<>();
+			filterList.add(f1);
+			filterList.add(f2);
+			filter = new Query.CompositeFilter(CompositeFilterOperator.AND, filterList);
+		}
+		Query q;
+		if (filter == null)
+			q = new Query("Message").setFilter(f1).addSort("timePosted", Query.SortDirection.DESCENDING);
+		else
+			q = new Query("Message").setFilter(filter).addSort("timePosted", Query.SortDirection.DESCENDING);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		for (Entity e : results) {
 			result.add(new Message(e));
@@ -146,7 +165,7 @@ public class Messages {
 	@ApiMethod(name = "messagesForUser", httpMethod = "get", path = "messages/messagesForUser")
 	public List<Message> messageForUser(@Named("username") String username) {
 		Filter filter = new FilterPredicate("postingUser", FilterOperator.EQUAL, username);
-		Query q = new Query("Message").setFilter(filter).addSort("timePosted", Query.SortDirection.ASCENDING);
+		Query q = new Query("Message").setFilter(filter).addSort("timePosted", Query.SortDirection.DESCENDING);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		if (!results.isEmpty()) {
 			List<Message> messages = new LinkedList<>();
@@ -429,11 +448,11 @@ public class Messages {
 //	}
 
 	@ApiMethod(name = "newGroup", httpMethod = "post", path = "groups/newGroup")
-	public Map<String, Boolean> newGroup(@Named("name") String name, @Named("memberNames") List<String> memberNames) {
+	public Map<String, Boolean> newGroup(@Named("name") String name, MemberList memberNames) {
 		Group g = new Group(name);
 		Key k = datastore.put(g.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		Filter filter = new FilterPredicate("username", FilterOperator.IN, memberNames);
+		Filter filter = new FilterPredicate("username", FilterOperator.IN, memberNames.memberNames);
 		Query q1 = new Query("Account").setFilter(filter);
 		List<Entity> results = datastore.prepare(q1).asList(FetchOptions.Builder.withDefaults());
 		if (!results.isEmpty()) {
@@ -459,7 +478,7 @@ public class Messages {
 			result.put("succeeded", new Boolean(false));
 			return result;
 		} else {
-			long accountId = (long) results1.get(0).getProperty("id");
+			long accountId = results1.get(0).getKey().getId();
 			Filter memberIdFilter = new FilterPredicate("groupId", FilterOperator.EQUAL, groupId);
 			Filter groupIdFilter = new FilterPredicate("memberId", FilterOperator.EQUAL, accountId);
 			Filter groupMembershipFilter = CompositeFilterOperator.and(groupIdFilter, memberIdFilter);
@@ -511,11 +530,11 @@ public class Messages {
 			return new ArrayList<>();
 		}
 		if (!results.isEmpty()) {
-			List<Long> groupIds = new LinkedList<Long>();
+			List<Key> groupIds = new LinkedList<>();
 			for (Entity e : results) {
-				groupIds.add(e.getKey().getId());
+				groupIds.add(KeyFactory.createKey("Group", (long)e.getProperty("groupId")));
 			}
-			filter = new FilterPredicate("ID", FilterOperator.IN, groupIds);
+			filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.IN, groupIds);
 			q = new Query("Group").setFilter(filter).addSort("name", Query.SortDirection.ASCENDING);
 			results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 		}

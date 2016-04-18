@@ -21,8 +21,9 @@
 @property (strong, nonatomic) NSArray* userGroups;
 @property (strong, nonatomic) IBOutlet UIView* grayView;
 @property (strong, nonatomic) IBOutlet UIView* groupSelectorContainer;
-@property NSNumber* index;
+@property NSInteger index;
 @property (strong) CLLocationManager* locationManager;
+@property (strong, nonatomic) UIPickerView* picker;
 
 
 //@property (strong, nonatomic) Modal* popController;
@@ -38,9 +39,11 @@
     _grayView.backgroundColor = [UIColor colorWithWhite:0.5 alpha:0.5];
     [_groupSelectorContainer addSubview:_grayView];
     [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)]];
-    
-    //[_locationManager startUpdatingLocation];
-    NSLog(@"Called");
+    _picker = [[UIPickerView alloc] init];
+    _picker.delegate = self;
+    _picker.hidden = true;
+    _privateGroup.delegate = self;
+    _privateGroup.inputView = _picker;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -91,6 +94,29 @@
     }
 }
 
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
+    _privateGroup.text = [(Group*)_userGroups[row] name];
+    _index = row;
+    _picker.hidden = true;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component {
+    return _userGroups[row];
+}
+
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return 1;
+}
+
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView {
+    return _userGroups.count;
+}
+
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+    _picker.hidden = false;
+    
+}
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -105,7 +131,7 @@
     if (_privateSwitch.selectedSegmentIndex == 0)
         destination.message.groupId = -1;
     else {
-        destination.message.groupId = ((Group*)[_userGroups objectAtIndex:[_index longValue]]).groupId;
+        destination.message.groupId = ((Group*)[_userGroups objectAtIndex:_index]).groupId;
         }
 }
 

@@ -39,6 +39,7 @@
 		65DBF1441CC1F1BE00D8A23D /* NewGroupViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1431CC1F1BE00D8A23D /* NewGroupViewController.m */; };
 		65DBF1491CC2DDC000D8A23D /* YourMessagesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1481CC2DDC000D8A23D /* YourMessagesTableViewCell.m */; };
 		65DBF14F1CC30C6A00D8A23D /* ModifyMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF14E1CC30C6A00D8A23D /* ModifyMessageViewController.m */; };
+		65DBF1521CC46A4600D8A23D /* YourGroupsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1511CC46A4500D8A23D /* YourGroupsTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +120,8 @@
 		65DBF1481CC2DDC000D8A23D /* YourMessagesTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YourMessagesTableViewCell.m; sourceTree = "<group>"; };
 		65DBF14D1CC30C6A00D8A23D /* ModifyMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModifyMessageViewController.h; sourceTree = "<group>"; };
 		65DBF14E1CC30C6A00D8A23D /* ModifyMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModifyMessageViewController.m; sourceTree = "<group>"; };
+		65DBF1501CC46A4500D8A23D /* YourGroupsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YourGroupsTableViewCell.h; sourceTree = "<group>"; };
+		65DBF1511CC46A4500D8A23D /* YourGroupsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YourGroupsTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -300,6 +303,8 @@
 			children = (
 				65DBF1471CC2DDC000D8A23D /* YourMessagesTableViewCell.h */,
 				65DBF1481CC2DDC000D8A23D /* YourMessagesTableViewCell.m */,
+				65DBF1501CC46A4500D8A23D /* YourGroupsTableViewCell.h */,
+				65DBF1511CC46A4500D8A23D /* YourGroupsTableViewCell.m */,
 			);
 			name = Cells;
 			sourceTree = "<group>";
@@ -456,6 +461,7 @@
 				65DBF1411CC1F1A600D8A23D /* YourGroupsTableViewController.m in Sources */,
 				65C0FBD21C7F4FED00B9183D /* PostViewController.m in Sources */,
 				65B7CFDF1C94FBB9000EEAE3 /* ReplyTableViewCell.m in Sources */,
+				65DBF1521CC46A4600D8A23D /* YourGroupsTableViewCell.m in Sources */,
 				65C0FBDD1C7F91CA00B9183D /* Constants.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
