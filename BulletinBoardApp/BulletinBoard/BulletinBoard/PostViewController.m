@@ -71,6 +71,7 @@
     //_picker.hidden = true;
     _privateGroup.delegate = self;
     _privateGroup.inputView = _picker;
+    _privateSwitch.selectedSegmentIndex = 0;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -163,7 +164,7 @@
     destination.messageBox = _messageBox;
     NSDate * now = [NSDate date];
     destination.message.timePosted = now;
-    if (_privateSwitch.selectedSegmentIndex == 0)
+    if (_privateSwitch.selectedSegmentIndex != 1)
         destination.message.groupId = -1;
     else {
         destination.message.groupId = ((Group*)[_userGroups objectAtIndex:_index]).groupId;

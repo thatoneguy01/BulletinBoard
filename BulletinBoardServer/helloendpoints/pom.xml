@@ -10,7 +10,7 @@
 
     <properties>
         <app.id>BulletinBoard-1230</app.id>
-        <app.version>13</app.version>
+        <app.version>17</app.version>
         <appengine.version>1.9.32</appengine.version>
         <gcloud.plugin.version>2.0.9.74.v20150814</gcloud.plugin.version>
 

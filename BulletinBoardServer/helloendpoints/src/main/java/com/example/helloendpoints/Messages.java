@@ -50,13 +50,13 @@ public class Messages {
 	public Map<String, Boolean> createMessage(Message message) {
 		if (message.timePosted == null)
 			message.timePosted = new Date();
-		message.location = new GeoPt(message.latitude, message.longitude);
+		//message.location = new GeoPt(message.latitude, message.longitude);
 		Key k = datastore.put(message.toEntity());
 		Map<String, Boolean> m = new HashMap<String, Boolean>();
 		if (k != null) {
-			m.put("succeeded", new Boolean(true));
+			m.put("succeeded", true);
 		} else {
-			m.put("succeeded", new Boolean(false));
+			m.put("succeeded", false);
 		}
 		return m;
 	}
@@ -89,34 +89,74 @@ public class Messages {
 		return messages;
 	}
 	
+//	@ApiMethod(name = "messagesNear", httpMethod = "get", path = "messages/messagesNear")
+//	public List<Message> messagesNear(@Named("username") @Nullable String username, @Named("latitude") float latitude, @Named("longitude") float longitude) {
+//		List<Message> result = new ArrayList<Message>();
+//		GeoPt center = new GeoPt(latitude, longitude);
+//		double radius = 300;
+//		Filter f1 = new StContainsFilter("location", new Circle(center, radius));
+//		Query q = new Query("Message").setFilter(f1);//.addSort("timePosted", Query.SortDirection.DESCENDING);
+//		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+//		for (Entity e : results) {
+//			result.add(new Message(e));
+//		}
+//		if (username != null) {
+//			List<Group> groups = new LinkedList<>();
+//			groups = listGroups(username);
+//			List<Long> groupIds = new ArrayList<>();
+//			groupIds.add((long) -1);
+//			for (Group g : groups) {
+//				groupIds.add(g.id);
+//			}
+//			List<Message> viewable = new LinkedList<>();
+//			for (Message m : result) {
+//				if (groupIds.contains(new Long(m.groupId)))
+//					viewable.add(m);
+//			}
+//			return viewable;
+//		}
+//		return result;
+//	}
+
 	@ApiMethod(name = "messagesNear", httpMethod = "get", path = "messages/messagesNear")
 	public List<Message> messagesNear(@Named("username") @Nullable String username, @Named("latitude") float latitude, @Named("longitude") float longitude) {
 		List<Message> result = new ArrayList<Message>();
-		GeoPt center = new GeoPt(latitude, longitude);
-		double radius = 1000;
-		Filter f1 = new StContainsFilter("location", new Circle(center, radius));
-		Filter filter = null;
+		float latDelta = .0018f;
+		float lonDelta = (float)Math.abs(200 / (111111 * Math.cos(latitude)));
+		Filter north = new FilterPredicate("latitude", FilterOperator.LESS_THAN_OR_EQUAL, latitude + latDelta);
+		Filter south = new FilterPredicate("latitude", FilterOperator.GREATER_THAN_OR_EQUAL, latitude - latDelta);
+		Filter east = new FilterPredicate("longitude", FilterOperator.LESS_THAN_OR_EQUAL, longitude + lonDelta);
+		Filter west = new FilterPredicate("longitude", FilterOperator.GREATER_THAN_OR_EQUAL, longitude - lonDelta);
+		List<Filter> filterList= new LinkedList<>();
+		filterList.add(north);
+		filterList.add(south);
+		Filter zone = new Query.CompositeFilter(CompositeFilterOperator.AND, filterList);
+		Query q = new Query("Message").setFilter(zone);//.addSort("timePosted", Query.SortDirection.DESCENDING);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		filterList= new LinkedList<>();
+		filterList.add(east);
+		filterList.add(west);
+		zone = new Query.CompositeFilter(CompositeFilterOperator.AND, filterList);
+		q = new Query("Message").setFilter(zone);//.addSort("timePosted", Query.SortDirection.DESCENDING);
+		List<Entity> results2 = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		results.retainAll(results2);
+		for (Entity e : results) {
+			result.add(new Message(e));
+		}
 		if (username != null) {
-			List<Group> groups = listGroups(username);
-			List<Long> groupIds = new LinkedList<>();
+			List<Group> groups = new LinkedList<>();
+			groups = listGroups(username);
+			List<Long> groupIds = new ArrayList<>();
+			groupIds.add((long) -1);
 			for (Group g : groups) {
 				groupIds.add(g.id);
 			}
-			groupIds.add(new Long(-1));
-			Filter f2 = new FilterPredicate("groupId", FilterOperator.IN, groupIds);
-			List<Filter> filterList = new ArrayList<>();
-			filterList.add(f1);
-			filterList.add(f2);
-			filter = new Query.CompositeFilter(CompositeFilterOperator.AND, filterList);
-		}
-		Query q;
-		if (filter == null)
-			q = new Query("Message").setFilter(f1).addSort("timePosted", Query.SortDirection.DESCENDING);
-		else
-			q = new Query("Message").setFilter(filter).addSort("timePosted", Query.SortDirection.DESCENDING);
-		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-		for (Entity e : results) {
-			result.add(new Message(e));
+			List<Message> viewable = new LinkedList<>();
+			for (Message m : result) {
+				if (groupIds.contains(new Long(m.groupId)))
+					viewable.add(m);
+			}
+			return viewable;
 		}
 		return result;
 	}
@@ -130,6 +170,7 @@ public class Messages {
 		for (Entity e : results) {
 			replies.add(new Reply(e));
 		}
+
 		return replies;
 	}
 	

@@ -16,8 +16,7 @@
 @interface ScanViewController ()
 
 @property (strong, nonatomic) IBOutlet UISegmentedControl* modeSelector;
-@property (strong, nonatomic) IBOutlet UIView* mapContainer;
-@property (strong, nonatomic) IBOutlet UIView* listContainer;
+@property (strong, nonatomic) IBOutlet UIButton* detailsButton;
 @property (strong, nonatomic) NSArray* messages;
 
 @end
@@ -31,22 +30,6 @@
     _mapView.delegate = self;
     _mapView.showsUserLocation = YES;
     CLLocationCoordinate2D coord = _mapView.userLocation.coordinate;
-    NSString* urlString = [NSString stringWithFormat:@"%@messages/messaesNear?username=%@&latitude=%f&longitude=%f", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"], coord.latitude,coord.longitude];
-    NSURL* url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
-    [request setHTTPMethod:@"GET"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
-    NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
-    //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
-    NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
-    NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-        //process response
-        NSError* jsonError;
-        NSDictionary* messages = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
-        _messages = [messages objectForKey:@"items"];
-        [self performSelectorOnMainThread:@selector(addMarkers:) withObject:_messages waitUntilDone:true];
-    }];
-    [getTask resume];
     _tableView.hidden = true;
     _mapView.hidden = false;
 }
@@ -73,6 +56,12 @@
     }
 }
 
+-(IBAction)viewDetails:(id)sender {
+    NSArray* selected = _mapView.selectedAnnotations;
+    MessageMarker* mm = selected[0];
+    
+}
+
 -(IBAction)refresh:(id)sender {
     NSString* urlString = [NSString stringWithFormat:@"%@messages/messaesNear?username=%@&latitude=%d&longitude=%d", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"], 0,0];
     NSURL* url = [NSURL URLWithString:urlString];
@@ -85,8 +74,15 @@
     NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         //process response
         NSError* jsonError;
-        NSDictionary* messages = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
-        _messages = [messages objectForKey:@"items"];
+        NSDictionary* responceContent = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+        NSArray* messageDicts = [responceContent objectForKey:@"items"];
+        NSMutableArray* messages = [[NSMutableArray alloc] init];
+        for (NSDictionary* dict in messageDicts) {
+            [messages addObject:[[Message alloc] initWithDict:dict]];
+        }
+        _messages = [NSArray arrayWithArray:messages];
+        [self performSelectorOnMainThread:@selector(addMarkers:) withObject:_messages waitUntilDone:true];
+
     }];
     [getTask resume];
 }
@@ -119,6 +115,29 @@
 #pragma mark - MKMapkitDelegate
 
 -(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
+    if (_messages == nil) {
+        NSString* urlString = [NSString stringWithFormat:@"%@messages/messagesNear?username=%@&latitude=%f&longitude=%f", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"], userLocation.coordinate.latitude,userLocation.coordinate.longitude];
+        NSURL* url = [NSURL URLWithString:urlString];
+        NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
+        [request setHTTPMethod:@"GET"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+        NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+        //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
+        NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
+        NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            //process response
+            NSError* jsonError;
+            NSDictionary* responceContent = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+            NSArray* messageDicts = [responceContent objectForKey:@"items"];
+            NSMutableArray* messages = [[NSMutableArray alloc] init];
+            for (NSDictionary* dict in messageDicts) {
+                [messages addObject:[[Message alloc] initWithDict:dict]];
+            }
+            _messages = [NSArray arrayWithArray:messages];
+            [self performSelectorOnMainThread:@selector(addMarkers:) withObject:_messages waitUntilDone:true];
+        }];
+        [getTask resume];
+    }
     double latitude = userLocation.coordinate.latitude;
     float delta = fabs(200 / (111111 * cos(latitude)));
     [self.mapView setRegion:MKCoordinateRegionMake(userLocation.coordinate, MKCoordinateSpanMake(.0018f, delta)) animated:false];
@@ -131,15 +150,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    NSString* identifier = segue.identifier;
-    if ([identifier isEqualToString:@"mList"]) {
-        MessageListTableViewController* listView = segue.destinationViewController;
-        listView.messages = _messages;
-    }
-    else if ([identifier isEqualToString:@"mMap"]) {
-        MessageMapViewController* mapView = segue.destinationViewController;
-        mapView.messages = _messages;
-    }
+
 }
 
 @end

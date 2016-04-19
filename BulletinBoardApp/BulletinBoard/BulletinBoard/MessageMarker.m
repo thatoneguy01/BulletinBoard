@@ -10,6 +10,6 @@
 #import <MapKit/MapKit.h>
 
 @implementation MessageMarker 
-@synthesize coordinate, title, subtitle;
+@synthesize coordinate, title, subtitle, message;
 
 @end

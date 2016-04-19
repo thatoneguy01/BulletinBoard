@@ -8,7 +8,6 @@
 
 #import "Message.h"
 #import "MessageMarker.h"
-
 @implementation Message
 
 //@synthesize message, publicVisable, postingUser, timePosted, score, location;
@@ -57,6 +56,7 @@
     m.title = self.message;
     m.subtitle = self.postingUser;
     m.coordinate = CLLocationCoordinate2DMake([self.lat doubleValue], [self.lon doubleValue]);
+    m.message = self;
     return m;
 }
 

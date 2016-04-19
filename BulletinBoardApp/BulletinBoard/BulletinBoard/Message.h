@@ -7,8 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MessageMarker.h"
-
+@class MessageMarker;
 @interface Message : NSObject
 
 @property long long mId;
