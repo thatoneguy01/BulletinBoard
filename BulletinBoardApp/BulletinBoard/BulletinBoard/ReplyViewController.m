@@ -140,6 +140,8 @@
     cell.reply = _replies[indexPath.row];
     cell.usernameLabel.text = cell.reply.postingUser;
     cell.replyText.text = cell.reply.message;
+    if (indexPath.row % 2 == 0)
+        cell.contentView.backgroundColor = [UIColor lightGrayColor];
     NSDateFormatter* formater = [[NSDateFormatter alloc] init];
     [formater setDateFormat:@"MM/dd/yy"];
     cell.postedDate.text = [formater stringFromDate:cell.reply.timePosted];

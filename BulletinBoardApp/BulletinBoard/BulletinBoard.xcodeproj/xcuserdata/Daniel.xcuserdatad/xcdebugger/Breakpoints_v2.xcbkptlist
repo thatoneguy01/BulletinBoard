@@ -500,7 +500,7 @@
                   moduleName = "BulletinBoard"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/Daniel/Documents/BulletinBoard/BulletinBoardApp/BulletinBoard/BulletinBoard/PostViewController.m"
-                  timestampString = "482821208.717131"
+                  timestampString = "482823856.092699"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "111"
@@ -515,7 +515,7 @@
                   moduleName = "BulletinBoard"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/Daniel/Documents/BulletinBoard/BulletinBoardApp/BulletinBoard/BulletinBoard/PostViewController.m"
-                  timestampString = "482821208.71734"
+                  timestampString = "482823856.09303"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "112"
@@ -570,6 +570,34 @@
             startingLineNumber = "112"
             endingLineNumber = "112"
             landmarkName = "-done"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.SymbolicBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            symbolName = ""
+            moduleName = "">
+            <Locations>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BulletinBoard/ReplyViewController.m"
+            timestampString = "482823410.98199"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

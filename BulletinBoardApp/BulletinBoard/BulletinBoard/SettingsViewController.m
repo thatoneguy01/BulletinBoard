@@ -92,7 +92,7 @@
 }
 
 -(IBAction)getUserGroups:(id)sender {
-    NSString* urlString = [NSString stringWithFormat:@"%@accounts/groupsForUser?username=%@", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"]];
+    NSString* urlString = [NSString stringWithFormat:@"%@groups/groupsForUser?username=%@", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"]];
     NSURL* url = [NSURL URLWithString:urlString];
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"GET"];

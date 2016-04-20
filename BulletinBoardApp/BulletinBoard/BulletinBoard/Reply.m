@@ -15,7 +15,7 @@
     self.rId = [(NSNumber*)[dict objectForKey:@"id"] longLongValue];
     self.parentId = [(NSNumber*)[dict objectForKey:@"parentId"] longLongValue];
     self.message = (NSString*)[dict objectForKey:@"message"];
-    self.postingUser = (NSString*)[dict objectForKey:@"postingUSer"];
+    self.postingUser = (NSString*)[dict objectForKey:@"postingUser"];
     self.timePosted = (NSDate*)[dict objectForKey:@"timePosted"];
     return self;
 }
