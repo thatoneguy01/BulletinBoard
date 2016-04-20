@@ -8,16 +8,22 @@
 
 #import "ScanViewController.h"
 #import "Message.h"
+#import "Reply.h"
 #import "MessageListTableViewController.h"
 #import "MessageMapViewController.h"
 #import "MessageTableViewCell.h"
 #import "Constants.h"
+#import "MessageMarker.h"
+#import "ReplyViewController.h"
 
 @interface ScanViewController ()
 
 @property (strong, nonatomic) IBOutlet UISegmentedControl* modeSelector;
 @property (strong, nonatomic) IBOutlet UIButton* detailsButton;
 @property (strong, nonatomic) NSArray* messages;
+@property (nonatomic) CLLocationCoordinate2D location;
+@property (strong, nonatomic) UIActivityIndicatorView* spinner;
+
 
 @end
 
@@ -29,9 +35,11 @@
     //_listContainer.hidden = YES;
     _mapView.delegate = self;
     _mapView.showsUserLocation = YES;
-    CLLocationCoordinate2D coord = _mapView.userLocation.coordinate;
     _tableView.hidden = true;
     _mapView.hidden = false;
+    _spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(135,140,100,100)];
+    _spinner.center = self.view.center;
+    self.view.userInteractionEnabled = false;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -40,8 +48,13 @@
 }
 
 -(void) addMarkers: (NSArray*)markers {
+    [_spinner removeFromSuperview];
+    self.view.userInteractionEnabled = true;
+    _messages = markers;
+    [_tableView reloadData];
     for (Message* m in markers) {
-        [_mapView addAnnotation:[m toMarker]];
+        MessageMarker* mm = [m toMarker];
+        [_mapView addAnnotation:mm];
     }
 }
 
@@ -57,13 +70,49 @@
 }
 
 -(IBAction)viewDetails:(id)sender {
-    NSArray* selected = _mapView.selectedAnnotations;
-    MessageMarker* mm = selected[0];
-    
+    if (_mapView.selectedAnnotations == nil | _mapView.selectedAnnotations.count == 0) {}
+    else {
+        self.view.userInteractionEnabled = false;
+        NSArray* selected = _mapView.selectedAnnotations;
+        MessageMarker* mm = selected[0];
+        Message* m = mm.message;
+        ReplyViewController* reply = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"reply"];
+        reply.message = m;
+        NSString* urlString = [NSString stringWithFormat:@"%@replies/replies?messageId=%lld", API_DOMAIN, m.mId];
+        NSURL* url = [NSURL URLWithString:urlString];
+        NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
+        [request setHTTPMethod:@"GET"];
+        [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+        NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+        //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
+        NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
+        NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+            //process response
+            NSError* jsonError;
+            NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+            NSArray* replyDicts = [responseContent objectForKey:@"items"];
+            NSMutableArray* replies = [[NSMutableArray alloc] init];
+            for (NSDictionary* dict in replyDicts) {
+                [replies addObject:[[Reply alloc] initWithDict:dict]];
+            }
+            reply.replies = replies;
+            [self performSelectorOnMainThread:@selector(presentReplyView:) withObject:reply waitUntilDone:true];
+                    }];
+        [getTask resume];
+        [_spinner startAnimating];
+        self.view.userInteractionEnabled = false;
+        [self.view addSubview:_spinner];
+    }
+}
+
+-(void)presentReplyView: (ReplyViewController*) vc {
+    [_spinner removeFromSuperview];
+    self.view.userInteractionEnabled = true;
+    [self.navigationController pushViewController:vc animated:true];
 }
 
 -(IBAction)refresh:(id)sender {
-    NSString* urlString = [NSString stringWithFormat:@"%@messages/messaesNear?username=%@&latitude=%d&longitude=%d", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"], 0,0];
+    NSString* urlString = [NSString stringWithFormat:@"%@messages/messagesNear?username=%@&latitude=%f&longitude=%f", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"], _mapView.userLocation.coordinate.latitude, _mapView.userLocation.coordinate.longitude];
     NSURL* url = [NSURL URLWithString:urlString];
     NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"GET"];
@@ -80,11 +129,13 @@
         for (NSDictionary* dict in messageDicts) {
             [messages addObject:[[Message alloc] initWithDict:dict]];
         }
-        _messages = [NSArray arrayWithArray:messages];
-        [self performSelectorOnMainThread:@selector(addMarkers:) withObject:_messages waitUntilDone:true];
-
+        //_messages = [NSArray arrayWithArray:messages];
+        [self performSelectorOnMainThread:@selector(addMarkers:) withObject:messages waitUntilDone:true];
     }];
     [getTask resume];
+    [_spinner startAnimating];
+    self.view.userInteractionEnabled = false;
+    [self.view addSubview:_spinner];
 }
 
 #pragma marl - UITableViewDelegate
@@ -109,12 +160,39 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    self.view.userInteractionEnabled = false;
+    Message* m = ((MessageTableViewCell*)[self tableView:tableView cellForRowAtIndexPath:indexPath]).message;
+    ReplyViewController* reply = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"reply"];
+    reply.message = m;
+    NSString* urlString = [NSString stringWithFormat:@"%@replies/replies?messageId=%lld", API_DOMAIN, m.mId];
+    NSURL* url = [NSURL URLWithString:urlString];
+    NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+    NSURLSessionConfiguration* sessionConfig = [NSURLSessionConfiguration defaultSessionConfiguration];
+    //sessionConfig.HTTPAdditionalHeaders = {@Authentication", @"AUTH KEY"};
+    NSURLSession* conn = [NSURLSession sessionWithConfiguration:sessionConfig];
+    NSURLSessionTask* getTask = [conn dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+        //process response
+        NSError* jsonError;
+        NSDictionary* responseContent = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&jsonError];
+        NSArray* replyDicts = [responseContent objectForKey:@"items"];
+        NSMutableArray* replies = [[NSMutableArray alloc] init];
+        for (NSDictionary* dict in replyDicts) {
+            [replies addObject:[[Reply alloc] initWithDict:dict]];
+        }
+        reply.replies = replies;
+        [self performSelectorOnMainThread:@selector(presentReplyView:) withObject:reply waitUntilDone:true];
+    }];
+    [getTask resume];
+    [_spinner startAnimating];
+    [self.view addSubview:_spinner];
 }
 
 #pragma mark - MKMapkitDelegate
 
 -(void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation {
+    self.view.userInteractionEnabled = true;
     if (_messages == nil) {
         NSString* urlString = [NSString stringWithFormat:@"%@messages/messagesNear?username=%@&latitude=%f&longitude=%f", API_DOMAIN, [[NSUserDefaults standardUserDefaults] stringForKey:@"username"], userLocation.coordinate.latitude,userLocation.coordinate.longitude];
         NSURL* url = [NSURL URLWithString:urlString];
@@ -133,8 +211,9 @@
             for (NSDictionary* dict in messageDicts) {
                 [messages addObject:[[Message alloc] initWithDict:dict]];
             }
-            _messages = [NSArray arrayWithArray:messages];
-            [self performSelectorOnMainThread:@selector(addMarkers:) withObject:_messages waitUntilDone:true];
+            //_messages = [NSArray arrayWithArray:messages];
+            //[_tableView reloadData];
+            [self performSelectorOnMainThread:@selector(addMarkers:) withObject:messages waitUntilDone:true];
         }];
         [getTask resume];
     }

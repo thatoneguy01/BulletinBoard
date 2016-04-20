@@ -11,15 +11,17 @@ public class Reply {
 	public String message;
 	public long parentId;
 	public Date timePosted;
+	public String postingUser;
 	
 	public Reply() {
 		
 	}
 	
-	public Reply(String message, long parentId) {
+	public Reply(String message, long parentId, String postingUser) {
 //		this.id = Messages.getUniqueReplyId();
 		this.message = message;
 		this.parentId = parentId;
+		this.postingUser = postingUser;
 		this.timePosted = Calendar.getInstance().getTime();
 	}
 	
@@ -28,6 +30,7 @@ public class Reply {
 			this.id = e.getKey().getId();
 			this.message = (String) e.getProperty("message");
 			this.parentId = (long) e.getProperty("parentId");
+			this.postingUser = (String)e.getProperty("postingUser");
 			this.timePosted = (Date) e.getProperty("timePosted");
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -38,6 +41,7 @@ public class Reply {
 		Entity e = new Entity("Reply");
 		e.setProperty("message", this.message);
 		e.setProperty("parentId", this.parentId);
+		e.setProperty("postingUser", this.postingUser);
 		e.setProperty("timePosted", this.timePosted);
 		return e;
 	}
@@ -64,6 +68,14 @@ public class Reply {
 
 	public void setParentId(long parentId) {
 		this.parentId = parentId;
+	}
+
+	public String getPostingUser() {
+		return postingUser;
+	}
+
+	public void setPostingUser(String postingUser) {
+		this.postingUser = postingUser;
 	}
 
 	public Date getTimePosted() {

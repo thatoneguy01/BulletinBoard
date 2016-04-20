@@ -28,29 +28,23 @@ import com.google.appengine.api.datastore.Query.GeoRegion.Circle;
 import com.google.appengine.api.datastore.Query.StContainsFilter;
 
 /**
- * Defines v1 of a helloworld API, which provides simple "greeting" methods.
+ * Defines v5 of the Bulletin Board API, which provides the server funtions for the app.
  */
 @Api(
-		name = "helloworld",
-		version = "v4",
+		name = "bulletinBoard",
+		version = "v5",
 		scopes = {Constants.EMAIL_SCOPE},
 		clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID, Constants.API_EXPLORER_CLIENT_ID},
 		audiences = {Constants.ANDROID_AUDIENCE}
 		)
 public class Messages {
 
-//	public static ArrayList<Message> messages = new ArrayList<Message>();
-//	public static ArrayList<Account> accounts = new ArrayList<Account>();
-//	public static ArrayList<Reply> replies = new ArrayList<Reply>();
-//	public static ArrayList<Group> groups = new ArrayList<Group>();
-//	public static ArrayList<GroupMembership> groupMemberships = new ArrayList<GroupMembership>();
 	public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	
 	@ApiMethod(name = "createMessage", httpMethod = "post", path = "messages/createMessage")
 	public Map<String, Boolean> createMessage(Message message) {
 		if (message.timePosted == null)
 			message.timePosted = new Date();
-		//message.location = new GeoPt(message.latitude, message.longitude);
 		Key k = datastore.put(message.toEntity());
 		Map<String, Boolean> m = new HashMap<String, Boolean>();
 		if (k != null) {
@@ -88,7 +82,76 @@ public class Messages {
 		}
 		return messages;
 	}
-	
+
+	@ApiMethod(name = "messagesForUser", httpMethod = "get", path = "messages/messagesForUser")
+	public List<Message> messageForUser(@Named("username") String username) {
+		Filter filter = new FilterPredicate("postingUser", FilterOperator.EQUAL, username);
+		Query q = new Query("Message").setFilter(filter).addSort("timePosted", Query.SortDirection.DESCENDING);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		if (!results.isEmpty()) {
+			List<Message> messages = new LinkedList<>();
+			for (Entity e : results) {
+				messages.add(new Message(e));
+			}
+			return messages;
+		}
+		else {
+			Logger.getGlobal().log(Level.SEVERE, "No Messages Found");
+			return new LinkedList<Message>();
+		}
+	}
+
+	@ApiMethod(name = "modifyMessage", httpMethod = "post", path = "messages/modifyMessage")
+	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, @Named("modifiedMessage")String modifiedMessage) {
+		Key messageIdKey = KeyFactory.createKey("Message", messageId);
+		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
+		Query q = new Query("Message").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		if (results.isEmpty()) {
+			result.put("succeeded", new Boolean(false));
+		} else {
+			Entity e = results.get(0);
+			e.setProperty("message", modifiedMessage);
+			datastore.put(e);
+			result.put("succeeded", new Boolean(true));
+		}
+		return result;
+	}
+
+	@ApiMethod(name = "deleteMessage", httpMethod = "get", path = "messages/deleteMessage")
+	public Map<String, Boolean> deleteMessage(@Named("messageId") long messageId) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		try {
+			Key messageIdKey = KeyFactory.createKey("Message", messageId);
+			datastore.delete(messageIdKey);
+			result.put("succeeded", new Boolean(true));
+			return result;
+		} catch (Exception e) {
+			result.put("succeeded", new Boolean(false));
+			return result;
+		}
+	}
+
+	@ApiMethod(name = "changeScore", httpMethod = "get", path = "messages/score")
+	public Map<String, Boolean> score(@Named("messageId") long messageId, @Named("scoreMod") int scoreMod) {
+		Key messageIdKey = KeyFactory.createKey("Message", messageId);
+		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
+		Query q = new Query("Message").setFilter(filter);
+		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+		if (results.isEmpty()) {
+			result.put("succeeded", new Boolean(false));
+		} else {
+			Entity e = results.get(0);
+			e.setProperty("score", ((long) e.getProperty("score") + scoreMod));
+			datastore.put(e);
+			result.put("succeeded", new Boolean(true));
+		}
+		return result;
+	}
+
+//  GeoPt is in closed alpha, unable to deploy at this time.
 //	@ApiMethod(name = "messagesNear", httpMethod = "get", path = "messages/messagesNear")
 //	public List<Message> messagesNear(@Named("username") @Nullable String username, @Named("latitude") float latitude, @Named("longitude") float longitude) {
 //		List<Message> result = new ArrayList<Message>();
@@ -174,7 +237,7 @@ public class Messages {
 		return replies;
 	}
 	
-	@ApiMethod(name = "getFirst20Replies", httpMethod = "get", path = "messages/getFirst20Replies")
+	@ApiMethod(name = "getFirst20Replies", httpMethod = "get", path = "replies/getFirst20Replies")
 	public List<Reply> getFirst20Replies(@Named("messageId") long messageId) {
 		Filter filter = new FilterPredicate("parentId", FilterOperator.EQUAL, messageId);
 		Query q = new Query("Reply").setFilter(filter).addSort("timePosted", Query.SortDirection.DESCENDING);
@@ -194,6 +257,7 @@ public class Messages {
 	
 	@ApiMethod(name = "createReply", httpMethod = "post", path = "replies/createReply")
 	public Map<String, Boolean> createReply(Reply reply) {
+		reply.timePosted = new Date();
 		Key k = datastore.put(reply.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		if (k != null) {
@@ -204,75 +268,7 @@ public class Messages {
 		return result;
 	}
 	
-	@ApiMethod(name = "messagesForUser", httpMethod = "get", path = "messages/messagesForUser")
-	public List<Message> messageForUser(@Named("username") String username) {
-		Filter filter = new FilterPredicate("postingUser", FilterOperator.EQUAL, username);
-		Query q = new Query("Message").setFilter(filter).addSort("timePosted", Query.SortDirection.DESCENDING);
-		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-		if (!results.isEmpty()) {
-			List<Message> messages = new LinkedList<>();
-			for (Entity e : results) {
-				messages.add(new Message(e));
-			}
-			return messages;
-		}
-		else {
-			Logger.getGlobal().log(Level.SEVERE, "No Messages Found");
-			return new LinkedList<Message>();
-		}
-	}
-	
-	@ApiMethod(name = "modifyMessage", httpMethod = "post", path = "messages/modifyMessage")
-	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, @Named("modifiedMessage")String modifiedMessage) {
-		Key messageIdKey = KeyFactory.createKey("Message", messageId);
-		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
-		Query q = new Query("Message").setFilter(filter);
-		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		if (results.isEmpty()) {
-			result.put("succeeded", new Boolean(false));
-		} else {
-			Entity e = results.get(0);
-			e.setProperty("message", modifiedMessage);
-			datastore.put(e);
-			result.put("succeeded", new Boolean(true));
-		}
-		return result;
-	}
-	
-	@ApiMethod(name = "deleteMessage", httpMethod = "get", path = "messages/deleteMessage")
-	public Map<String, Boolean> deleteMessage(@Named("messageId") long messageId) {
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		try {
-			Key messageIdKey = KeyFactory.createKey("Message", messageId);
-			datastore.delete(messageIdKey);
-			result.put("succeeded", new Boolean(true));
-			return result;
-		} catch (Exception e) {
-			result.put("succeeded", new Boolean(false));
-			return result;
-		}
-	}
-	
-	@ApiMethod(name = "score", httpMethod = "get", path = "messages/score")
-	public Map<String, Boolean> score(@Named("messageId") long messageId, @Named("scoreMod") int scoreMod) {
-		Key messageIdKey = KeyFactory.createKey("Message", messageId);
-		Filter filter = new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, FilterOperator.EQUAL, messageIdKey);
-		Query q = new Query("Message").setFilter(filter);
-		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		if (results.isEmpty()) {
-			result.put("succeeded", new Boolean(false));
-		} else {
-			Entity e = results.get(0);
-			e.setProperty("score", ((long) e.getProperty("score") + scoreMod));
-			datastore.put(e);
-			result.put("succeeded", new Boolean(true));
-		}
-		return result;
-	}
-	
-	@ApiMethod(name = "checkPassword", httpMethod = "get", path = "accounts/checkPassword")
+	@ApiMethod(name = "checkLogin", httpMethod = "get", path = "accounts/checkPassword")
 	public Map<String, Boolean> checkPassword(@Named("username") String username, @Named("password") String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
 		Query q = new Query("Account").setFilter(filter);
@@ -353,7 +349,7 @@ public class Messages {
 		}
 	}
 
-	@ApiMethod(name = "checkSocial", httpMethod = "get", path = "accounts/socialAccountExists")
+	@ApiMethod(name = "socialAccountExists", httpMethod = "get", path = "accounts/socialAccountExists")
 	public Map<String, Object> socialExists(@Named("userId") long userId) {
 		Filter filter = new FilterPredicate("social", FilterOperator.EQUAL, userId);
 		Query q = new Query("Account").setFilter(filter);
@@ -391,7 +387,7 @@ public class Messages {
 		return toReturn;
 	}
 
-	@ApiMethod(name = "listAccounts", httpMethod = "get", path = "accounts/list")
+	@ApiMethod(name = "listAllAccounts", httpMethod = "get", path = "accounts/list")
 	public List<Account> getAllAccounts() {
 		Query q = new Query("Account").addSort("username", Query.SortDirection.ASCENDING);
 		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
@@ -428,7 +424,7 @@ public class Messages {
 		}
 	}
 	
-	@ApiMethod(name = "createGroup", httpMethod = "post", path = "groups/createGroup")
+	@ApiMethod(name = "createEmptyGroup", httpMethod = "post", path = "groups/createEmptyGroup")
 	public Map<String, Boolean> createGroup(Group group) {
 		Key k = datastore.put(group.toEntity());
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
@@ -489,7 +485,7 @@ public class Messages {
 //		return result;
 //	}
 
-	@ApiMethod(name = "newGroup", httpMethod = "post", path = "groups/newGroup")
+	@ApiMethod(name = "createGroup", httpMethod = "post", path = "groups/createGroup")
 	public Map<String, Boolean> newGroup(@Named("name") String name, MemberList memberNames) {
 		Group g = new Group(name);
 		Key k = datastore.put(g.toEntity());
@@ -558,7 +554,7 @@ public class Messages {
 	}
 	
 	// TODO always returns empty list
-	@ApiMethod(name = "listGroups", httpMethod = "get", path = "groups/groupsForUser")
+	@ApiMethod(name = "groupsForUser", httpMethod = "get", path = "groups/groupsForUser")
 	public List<Group> listGroups(@Named("username") String username) {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
 		Query q = new Query("Account").setFilter(filter);
