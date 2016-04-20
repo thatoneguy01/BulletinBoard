@@ -27,7 +27,7 @@
     _lat = [dict objectForKey:@"latitude"];
     _lon = [dict objectForKey:@"longitude"];
     _score = [(NSNumber*)[dict objectForKey:@"score"] intValue];
-    _groupId = [(NSNumber*)[dict objectForKey:@"groupId"] longLongValue];
+    _groupId = (long long)[dict objectForKey:@"groupId"];
     NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
     [outputFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssz"];
     _timePosted = [outputFormatter dateFromString:[dict objectForKey:@"timePosted"]];
@@ -38,17 +38,18 @@
     NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
     [outputFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssz"];
     NSString* time = [outputFormatter stringFromDate:_timePosted];
-    NSLog(time);
-    NSDictionary* temp = [[NSDictionary alloc] initWithObjectsAndKeys:
-                          _message, @"message",
-                          _postingUser, @"postingUser",
-                          _lat, @"latitude",
-                          _lon, @"longitude",
-                          _score, @"score",
-                          _groupId, @"groupId",
-                          time, @"timePosted",
-                          _mId, "id", nil];
-    return temp;
+    //NSNumber* gId = [NSNumber numberWithLongLong:_groupId];
+    NSMutableDictionary* temp = [[NSMutableDictionary alloc] init];
+    [temp setObject:_message forKey:@"message"];
+    [temp setObject:_lat forKey:@"latitude"];
+    [temp setObject:_lon forKey:@"longitude"];
+    [temp setObject:_postingUser forKey:@"postingUser"];
+    [temp setObject:@(_score) forKey:@"score"];
+    [temp setObject:@(_groupId) forKey:@"groupId"];
+    //[temp setObject:time forKey:@"timePosted"];
+    [temp setObject:@(_mId) forKey:@"id"];
+    
+    return [NSDictionary dictionaryWithDictionary:temp];
 }
 
 -(MessageMarker*)toMarker {

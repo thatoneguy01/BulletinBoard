@@ -36,7 +36,7 @@
         self.window.rootViewController = viewController;
         [self.window makeKeyAndVisible];
     }
-    NSLog([defaults stringForKey:@"username"]);
+    //NSLog([defaults stringForKey:@"username"]);
     _locationManager =[[CLLocationManager alloc] init];
     [_locationManager setDelegate:self];
     [_locationManager setDesiredAccuracy:kCLLocationAccuracyBest];

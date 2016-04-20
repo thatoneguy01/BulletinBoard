@@ -27,9 +27,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSNotificationCenter* center = [NSNotificationCenter defaultCenter];
-    //center pr
-    // Do any additional setup after loading the view.
     [FBSDKProfile enableUpdatesOnAccessTokenChange:true];
     _loginButton = [[FBSDKLoginButton alloc] init];
     [_loginButton setDelegate:self];
@@ -279,8 +276,7 @@
              if (!error) {
                  NSDictionary* data = result;
                  long long userId = (long long)[data objectForKey:@"id"];
-#warning fix api parameter name
-                 NSString* urlString = [NSString stringWithFormat:@"%@accounts/socialAccountExists?username=%ld", API_DOMAIN, userId];
+                 NSString* urlString = [NSString stringWithFormat:@"%@accounts/socialAccountExists?userId=%lld", API_DOMAIN, userId];
                  NSURL* url = [NSURL URLWithString:urlString];
                  NSMutableURLRequest* request = [[NSMutableURLRequest alloc] initWithURL:url];
                  [request setHTTPMethod:@"GET"];

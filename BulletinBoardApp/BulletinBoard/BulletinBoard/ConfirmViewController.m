@@ -41,6 +41,9 @@
     [_spinner removeFromSuperview];
     self.view.userInteractionEnabled = true;
     _messageBox.text = @"";
+    _presenter.privateSwitch.selectedSegmentIndex = 0;
+    _presenter.privateGroup.text = @"";
+    _presenter.grayView.hidden = false;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -59,6 +62,7 @@
     NSString* lon = [NSString stringWithFormat:@"%f", currentLoc.location.coordinate.longitude];
     _message.lat = [[NSNumber alloc] initWithDouble:[lat doubleValue]];
     _message.lon = [[NSNumber alloc] initWithDouble:[lon doubleValue]];
+    _message.groupId = _message.groupId;
     //_message.location = CLLocationCoordinate2DMake([_message.lat floatValue], [_message.lon floatValue]);
     NSString* urlString = [NSString stringWithFormat:@"%@messages/createMessage", API_DOMAIN];
     NSURL* url = [NSURL URLWithString:urlString];

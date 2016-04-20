@@ -15,12 +15,8 @@
 @interface PostViewController ()
 
 //@property (strong, nonatomic) IBOutlet UITextView* messageBox;
-@property (strong, nonatomic) IBOutlet UISegmentedControl* privateSwitch;
-@property (strong, nonatomic) IBOutlet UITextField* privateGroup;
 @property (strong, nonatomic) IBOutlet UIButton* nextButton;
 @property (strong, nonatomic) NSArray* userGroups;
-@property (strong, nonatomic) IBOutlet UIView* grayView;
-@property (strong, nonatomic) IBOutlet UIView* groupSelectorContainer;
 @property NSInteger index;
 @property (strong) CLLocationManager* locationManager;
 @property (strong, nonatomic) UIPickerView* picker;
@@ -164,8 +160,9 @@
     destination.messageBox = _messageBox;
     NSDate * now = [NSDate date];
     destination.message.timePosted = now;
+    destination.presenter = self;
     if (_privateSwitch.selectedSegmentIndex != 1)
-        destination.message.groupId = -1;
+        destination.message.groupId = -1;//[NSNumber numberWithLongLong:-1];
     else {
         destination.message.groupId = ((Group*)[_userGroups objectAtIndex:_index]).groupId;
         }

@@ -31,7 +31,7 @@ import com.google.appengine.api.datastore.Query.StContainsFilter;
  * Defines v5 of the Bulletin Board API, which provides the server funtions for the app.
  */
 @Api(
-		name = "bulletinBoard",
+		name = "bulletinBoard	",
 		version = "v5",
 		scopes = {Constants.EMAIL_SCOPE},
 		clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID, Constants.API_EXPLORER_CLIENT_ID},
