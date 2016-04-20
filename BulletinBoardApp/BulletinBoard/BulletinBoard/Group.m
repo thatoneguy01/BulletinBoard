@@ -13,7 +13,7 @@
 
 -(instancetype)initWithDict: (NSDictionary*)dict {
     self = [super init];
-    groupId = (long long)[dict objectForKey:@"id"];
+    groupId = [(NSNumber*)[dict objectForKey:@"id"] longLongValue];
     name = (NSString*)[dict objectForKey:@"name"];
     time = (NSDate*)[dict objectForKey:@"time"];
     return self;

@@ -405,9 +405,12 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="S1J-cB-tRS">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="S1J-cB-tRS">
                                 <rect key="frame" x="20" y="316" width="560" height="276"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="276" id="OyG-Tk-WVI"/>
+                                </constraints>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="rCell" id="bMB-bR-Txz" customClass="ReplyTableViewCell">
                                         <rect key="frame" x="0.0" y="28" width="560" height="44"/>
@@ -452,6 +455,11 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="OyG-Tk-WVI"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <outlet property="dataSource" destination="5u9-Ji-LnT" id="FnD-r3-pAw"/>
                                     <outlet property="delegate" destination="5u9-Ji-LnT" id="Zty-vH-O1X"/>
@@ -478,9 +486,11 @@
                             <constraint firstItem="E9v-zX-K2V" firstAttribute="height" secondItem="o9y-7v-koa" secondAttribute="height" id="86j-Ac-u8r"/>
                             <constraint firstItem="o9y-7v-koa" firstAttribute="top" secondItem="Rg4-5X-gqY" secondAttribute="top" id="AYw-X6-QAH"/>
                             <constraint firstItem="wVs-yF-ZgO" firstAttribute="top" secondItem="kLo-Tj-9p9" secondAttribute="bottom" constant="8" id="EvB-zB-S5j"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="S1J-cB-tRS" secondAttribute="trailing" id="GGw-2D-3wb"/>
                             <constraint firstAttribute="trailingMargin" secondItem="S1J-cB-tRS" secondAttribute="trailing" id="H09-ax-5In"/>
                             <constraint firstAttribute="leadingMargin" secondItem="iCF-uF-vuK" secondAttribute="leading" id="Hde-2r-hrT"/>
                             <constraint firstItem="wVs-yF-ZgO" firstAttribute="width" secondItem="hPt-C4-P2Q" secondAttribute="height" multiplier="1:1" id="NUE-ox-3A7"/>
+                            <constraint firstItem="S1J-cB-tRS" firstAttribute="top" secondItem="MgE-bS-qBI" secondAttribute="bottom" constant="8" id="OnG-D1-tcu"/>
                             <constraint firstItem="Rg4-5X-gqY" firstAttribute="leading" secondItem="iCF-uF-vuK" secondAttribute="trailing" constant="8" id="PcI-Pa-IYL"/>
                             <constraint firstAttribute="trailingMargin" secondItem="o9y-7v-koa" secondAttribute="trailing" id="PhP-bF-b2O"/>
                             <constraint firstItem="E9v-zX-K2V" firstAttribute="top" secondItem="EbM-dE-9lt" secondAttribute="bottom" constant="2" id="SHH-hH-vgh"/>
@@ -504,9 +514,19 @@
                             <constraint firstItem="wVs-yF-ZgO" firstAttribute="leading" secondItem="hPt-C4-P2Q" secondAttribute="leadingMargin" constant="-20" id="qRf-eB-QdL"/>
                             <constraint firstItem="Rg4-5X-gqY" firstAttribute="top" secondItem="Y6B-Gd-QlS" secondAttribute="bottom" constant="20" id="qwB-9b-OZr"/>
                             <constraint firstItem="lXI-z2-RuU" firstAttribute="top" secondItem="S1J-cB-tRS" secondAttribute="bottom" constant="8" id="rlH-pN-THl"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="S1J-cB-tRS" secondAttribute="leading" id="t9F-uP-seX"/>
                             <constraint firstAttribute="trailingMargin" secondItem="E9v-zX-K2V" secondAttribute="trailing" id="x1F-7l-qAg"/>
+                            <constraint firstItem="lXI-z2-RuU" firstAttribute="top" secondItem="S1J-cB-tRS" secondAttribute="bottom" constant="8" id="xTu-lu-mtf"/>
                             <constraint firstItem="wVs-yF-ZgO" firstAttribute="width" secondItem="hPt-C4-P2Q" secondAttribute="width" id="zFl-Oa-4kW"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="1U4-Rj-wnD"/>
+                                <exclude reference="H09-ax-5In"/>
+                                <exclude reference="nIM-3L-D5q"/>
+                                <exclude reference="rlH-pN-THl"/>
+                            </mask>
+                        </variation>
                     </view>
                     <navigationItem key="navigationItem" id="LyO-Qe-Q1m"/>
                     <connections>

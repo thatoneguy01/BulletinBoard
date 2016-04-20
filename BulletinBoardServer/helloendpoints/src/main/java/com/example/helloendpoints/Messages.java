@@ -31,7 +31,7 @@ import com.google.appengine.api.datastore.Query.StContainsFilter;
  * Defines v5 of the Bulletin Board API, which provides the server funtions for the app.
  */
 @Api(
-		name = "bulletinBoard	",
+		name = "bulletinBoard",
 		version = "v5",
 		scopes = {Constants.EMAIL_SCOPE},
 		clientIds = {Constants.WEB_CLIENT_ID, Constants.ANDROID_CLIENT_ID, Constants.IOS_CLIENT_ID, Constants.API_EXPLORER_CLIENT_ID},
@@ -125,6 +125,11 @@ public class Messages {
 		try {
 			Key messageIdKey = KeyFactory.createKey("Message", messageId);
 			datastore.delete(messageIdKey);
+			Filter f = new FilterPredicate("parentId", FilterOperator.EQUAL, messageId);
+			Query q = new Query("Reply").setFilter(f);
+			List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			for (Entity e : results)
+				datastore.delete(e.getKey());
 			result.put("succeeded", new Boolean(true));
 			return result;
 		} catch (Exception e) {
@@ -526,10 +531,10 @@ public class Messages {
 				result.put("succeeded", new Boolean(false));
 				return result;
 			} else {
-				long groupMembershipId = ((long) results2.get(0).getProperty("id"));
+				//long groupMembershipId = ((long) results2.get(0).getProperty("groupId"));
 				try {
-					Key groupMembershipIdKey = KeyFactory.createKey("GroupMembership", groupMembershipId);
-					datastore.delete(groupMembershipIdKey);
+					//Key groupMembershipIdKey = KeyFactory.createKey("GroupMembership", groupMembershipId);
+					datastore.delete(results2.get(0).getKey());
 					result.put("succeeded", new Boolean(true));
 					return result;
 				} catch (Exception e) {

@@ -27,7 +27,7 @@
     _lat = [dict objectForKey:@"latitude"];
     _lon = [dict objectForKey:@"longitude"];
     _score = [(NSNumber*)[dict objectForKey:@"score"] intValue];
-    _groupId = (long long)[dict objectForKey:@"groupId"];
+    _groupId = [(NSNumber*)[dict objectForKey:@"groupId"] longLongValue];
     NSDateFormatter *outputFormatter = [[NSDateFormatter alloc] init];
     [outputFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssz"];
     _timePosted = [outputFormatter dateFromString:[dict objectForKey:@"timePosted"]];
@@ -45,9 +45,9 @@
     [temp setObject:_lon forKey:@"longitude"];
     [temp setObject:_postingUser forKey:@"postingUser"];
     [temp setObject:@(_score) forKey:@"score"];
-    [temp setObject:@(_groupId) forKey:@"groupId"];
+    [temp setObject:[NSNumber numberWithLongLong:_groupId] forKey:@"groupId"];
     //[temp setObject:time forKey:@"timePosted"];
-    [temp setObject:@(_mId) forKey:@"id"];
+    [temp setObject:[NSNumber numberWithLongLong:_mId] forKey:@"id"];
     
     return [NSDictionary dictionaryWithDictionary:temp];
 }
