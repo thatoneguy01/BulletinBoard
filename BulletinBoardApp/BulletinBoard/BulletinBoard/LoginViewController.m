@@ -292,7 +292,7 @@
                          [self performSelectorOnMainThread:@selector(success) withObject:nil waitUntilDone:true];
                      }
                      else {
-                         [self performSelectorOnMainThread:@selector(chooseUsername:) withObject:[NSNumber numberWithLong:userId] waitUntilDone:true];
+                         [self performSelectorOnMainThread:@selector(chooseUsername:) withObject:[NSNumber numberWithLongLong:userId] waitUntilDone:true];
                      }
                  }];
                  [getTask resume];

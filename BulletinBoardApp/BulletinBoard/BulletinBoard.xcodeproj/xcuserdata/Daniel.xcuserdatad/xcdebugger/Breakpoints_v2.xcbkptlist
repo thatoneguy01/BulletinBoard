@@ -166,15 +166,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BulletinBoard/AppDelegate.m"
-            timestampString = "482382366.207223"
+            timestampString = "482824747.442749"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "35"
-            endingLineNumber = "35"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
             landmarkName = "-application:didFinishLaunchingWithOptions:"
             landmarkType = "5">
          </BreakpointContent>
@@ -500,7 +500,7 @@
                   moduleName = "BulletinBoard"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/Daniel/Documents/BulletinBoard/BulletinBoardApp/BulletinBoard/BulletinBoard/PostViewController.m"
-                  timestampString = "482823856.092699"
+                  timestampString = "482884001.135025"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "111"
@@ -515,7 +515,7 @@
                   moduleName = "BulletinBoard"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/Daniel/Documents/BulletinBoard/BulletinBoardApp/BulletinBoard/BulletinBoard/PostViewController.m"
-                  timestampString = "482823856.09303"
+                  timestampString = "482884001.13518"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "112"

@@ -42,6 +42,8 @@
 		65DBF1491CC2DDC000D8A23D /* YourMessagesTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1481CC2DDC000D8A23D /* YourMessagesTableViewCell.m */; };
 		65DBF14F1CC30C6A00D8A23D /* ModifyMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF14E1CC30C6A00D8A23D /* ModifyMessageViewController.m */; };
 		65DBF1521CC46A4600D8A23D /* YourGroupsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 65DBF1511CC46A4500D8A23D /* YourGroupsTableViewCell.m */; };
+		65FAD1491CC74FA80016CB6B /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65FAD1471CC74FA80016CB6B /* Fabric.framework */; };
+		65FAD14A1CC74FA80016CB6B /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65FAD1481CC74FA80016CB6B /* Crashlytics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +130,8 @@
 		65DBF14E1CC30C6A00D8A23D /* ModifyMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModifyMessageViewController.m; sourceTree = "<group>"; };
 		65DBF1501CC46A4500D8A23D /* YourGroupsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YourGroupsTableViewCell.h; sourceTree = "<group>"; };
 		65DBF1511CC46A4500D8A23D /* YourGroupsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YourGroupsTableViewCell.m; sourceTree = "<group>"; };
+		65FAD1471CC74FA80016CB6B /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
+		65FAD1481CC74FA80016CB6B /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,8 +140,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				6540DC701CB753C00077F0A8 /* FBSDKShareKit.framework in Frameworks */,
+				65FAD1491CC74FA80016CB6B /* Fabric.framework in Frameworks */,
 				65C0FBD71C7F541300B9183D /* MapKit.framework in Frameworks */,
 				6540DC6E1CB753C00077F0A8 /* FBSDKCoreKit.framework in Frameworks */,
+				65FAD14A1CC74FA80016CB6B /* Crashlytics.framework in Frameworks */,
 				6540DC6F1CB753C00077F0A8 /* FBSDKLoginKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,6 +191,8 @@
 		65C0FB8E1C76564300B9183D = {
 			isa = PBXGroup;
 			children = (
+				65FAD1471CC74FA80016CB6B /* Fabric.framework */,
+				65FAD1481CC74FA80016CB6B /* Crashlytics.framework */,
 				6540DC6A1CB753A60077F0A8 /* Framework */,
 				65C0FBD61C7F541300B9183D /* MapKit.framework */,
 				65C0FB991C76564300B9183D /* BulletinBoard */,
@@ -345,6 +353,7 @@
 				65C0FB931C76564300B9183D /* Sources */,
 				65C0FB941C76564300B9183D /* Frameworks */,
 				65C0FB951C76564300B9183D /* Resources */,
+				65FAD14B1CC8305A0016CB6B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -402,6 +411,7 @@
 				TargetAttributes = {
 					65C0FB961C76564300B9183D = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = V3N6REVXDJ;
 					};
 					65C0FBB21C76564300B9183D = {
 						CreatedOnToolsVersion = 7.2.1;
@@ -459,6 +469,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		65FAD14B1CC8305A0016CB6B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Fabric.framework/run 7b93a5e6eec8abb8b140ee8bdcf7733fdb4658d1 8878d89cb3c65c0cb72a8b891bd457794a8a8b520281b4f76f241b4ba32c6828";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		65C0FB931C76564300B9183D /* Sources */ = {
@@ -631,11 +657,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				FRAMEWORK_SEARCH_PATHS = /Users/Daniel/Documents/FacebookSDK;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					/Users/Daniel/Documents/FacebookSDK,
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = BulletinBoard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nqh.BulletinBoard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nearlyhuman.BulletinBoard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -643,11 +675,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				FRAMEWORK_SEARCH_PATHS = /Users/Daniel/Documents/FacebookSDK;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					/Users/Daniel/Documents/FacebookSDK,
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = BulletinBoard/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.nqh.BulletinBoard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nearlyhuman.BulletinBoard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

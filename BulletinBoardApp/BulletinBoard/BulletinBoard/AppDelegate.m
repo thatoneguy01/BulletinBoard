@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import "LoginViewController.h"
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 @import CoreLocation;
 
@@ -24,6 +26,8 @@
     // Override point for customization after application launch.
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
+    //[[Crashlytics sharedInstance] setDebugMode:YES];
+    [Fabric with:@[[Crashlytics class]]];
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     //NSNumber* loggedIn = [defaults objectForKey:@"loggedIn"];
     if (![defaults boolForKey:@"loggedIn"]) {

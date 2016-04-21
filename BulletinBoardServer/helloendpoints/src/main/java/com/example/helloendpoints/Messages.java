@@ -187,7 +187,7 @@ public class Messages {
 //	}
 
 	@ApiMethod(name = "messagesNear", httpMethod = "get", path = "messages/messagesNear")
-	public List<Message> messagesNear(@Named("username") @Nullable String username, @Named("latitude") float latitude, @Named("longitude") float longitude) {
+	public List<Message> messagesNear(@Named("username") @Nullable String username, @Named("latitude") double latitude, @Named("longitude") double longitude) {
 		List<Message> result = new ArrayList<Message>();
 		float latDelta = .0018f;
 		float lonDelta = (float)Math.abs(200 / (111111 * Math.cos(latitude)));
