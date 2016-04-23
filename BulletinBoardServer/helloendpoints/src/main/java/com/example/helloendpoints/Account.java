@@ -5,7 +5,6 @@ import com.google.appengine.api.datastore.Entity;
 public class Account {
 
 	public long id;
-//	public Key key;
 	public String username;
 	public String hashedPassword;
 	public String salt;

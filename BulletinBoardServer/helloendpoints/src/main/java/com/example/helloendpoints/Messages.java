@@ -4,7 +4,12 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,7 +21,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
@@ -24,11 +28,9 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-import com.google.appengine.api.datastore.Query.GeoRegion.Circle;
-import com.google.appengine.api.datastore.Query.StContainsFilter;
 
 /**
- * Defines v5 of the Bulletin Board API, which provides the server funtions for the app.
+ * Defines v5 of the Bulletin Board API, which provides the server functions for the app.
  */
 @Api(
 		name = "bulletinBoard",
@@ -440,55 +442,6 @@ public class Messages {
 		}
 		return result;
 	}
-	
-//	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/addToGroup")
-//	public Map<String, Boolean> addToGroup(@Named("groupName") String groupName, @Named("memberNames") List<Long> memberNames) {
-//		// TODO assuming group names are unique, another version is commented out below where this assumption is not made
-//		// and the first parameter is the groupid instead of the group name
-//		// get group id
-//		// create groupmembership with memberids for group id
-//		Filter filter = new FilterPredicate("name", FilterOperator.EQUAL, groupName);
-//		Query q = new Query("Group").setFilter(filter);
-//		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-//		Map<String, Boolean> result = new HashMap<String, Boolean>();
-//		if (results.size() != 1) {
-//			result.put("succeeded", new Boolean(false));
-//		} else {
-//			Entity e = results.get(0);
-//			int failedToAdd = 0;
-//			for (Long memberId : memberNames) {
-//				GroupMembership groupMembership = new GroupMembership(e.getKey().getId(), memberId);
-//				Key k = datastore.put(groupMembership.toEntity());
-//				if (k == null) {
-//					failedToAdd++;
-//				}
-//			}
-//			if (failedToAdd == memberNames.size()) {
-//				result.put("succeeded", new Boolean(false));
-//			} else {
-//				result.put("succeeded", new Boolean(true));
-//			}
-//		}
-//		return result;
-//	}
-	
-//	@ApiMethod(name = "addToGroup", httpMethod = "post", path = "groups/addToGroup")
-//	public Map<String, Boolean> addToGroup(@Named("groupId") long groupId, List<Long> memberNames) {
-//		Filter filter = new FilterPredicate("id", FilterOperator.EQUAL, groupId);
-//		Query q = new Query("Group").setFilter(filter);
-//		List<Entity> results = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-//		Map<String, Boolean> result = new HashMap<String, Boolean>();
-//		if (results.size() != 1) {
-//			result.put("succeeded", new Boolean(false));
-//		} else {
-//			Entity e = results.get(0);
-//			for (Long memberId : memberNames) {
-//				GroupMembership groupMembership = new GroupMembership(e.getKey().getId(), memberId);
-//				datastore.put(groupMembership.toEntity());
-//			}
-//		}
-//		return result;
-//	}
 
 	@ApiMethod(name = "createGroup", httpMethod = "post", path = "groups/createGroup")
 	public Map<String, Boolean> newGroup(@Named("name") String name, MemberList memberNames) {
@@ -545,7 +498,6 @@ public class Messages {
 		}
 	}
 	
-	// TODO this is for testing group creation, can be removed after testing is done
 	@ApiMethod(name = "listAllGroups", httpMethod = "get", path = "groups/listAllGroups")
 	public List<Group> listAllGroups() {
 		Query q = new Query("Group");
@@ -558,7 +510,6 @@ public class Messages {
 		return groups;
 	}
 	
-	// TODO always returns empty list
 	@ApiMethod(name = "groupsForUser", httpMethod = "get", path = "groups/groupsForUser")
 	public List<Group> listGroups(@Named("username") String username) {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);

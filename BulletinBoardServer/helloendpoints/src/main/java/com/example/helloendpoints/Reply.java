@@ -18,7 +18,6 @@ public class Reply {
 	}
 	
 	public Reply(String message, long parentId, String postingUser) {
-//		this.id = Messages.getUniqueReplyId();
 		this.message = message;
 		this.parentId = parentId;
 		this.postingUser = postingUser;

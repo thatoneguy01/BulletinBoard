@@ -11,7 +11,6 @@ public class Message {
 	public String message;
 	public String postingUser;
 	public long score;
-	//public GeoPt location;
 	public float latitude;
 	public float longitude;
 	public long groupId;
@@ -26,7 +25,6 @@ public class Message {
 		this.message = message;
 		this.postingUser = postingUser;
 		this.score = score;
-		//this.location = location;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.groupId = groupId;
@@ -39,7 +37,6 @@ public class Message {
 			this.message = (String)e.getProperty("message");
 			this.postingUser = (String)e.getProperty("postingUser");
 			this.score = (long) e.getProperty("score");
-			//this.location = (GeoPt) e.getProperty("location");
 			this.latitude = new Float((double)e.getProperty("latitude")).floatValue();
 			this.longitude = new Float((double)e.getProperty("longitude")).floatValue();
 			this.groupId = (long)e.getProperty("groupId");
@@ -55,7 +52,6 @@ public class Message {
 		e.setProperty("message", this.message);
 		e.setProperty("postingUser", this.postingUser);
 		e.setProperty("score", this.score);
-		//e.setProperty("location", this.getLocation());
 		e.setProperty("latitude", this.latitude);
 		e.setProperty("longitude", this.longitude);
 		e.setProperty("groupId", this.groupId);
@@ -90,14 +86,6 @@ public class Message {
 	public void setScore(long score) {
 		this.score = score;
 	}
-
-	//public GeoPt getLocation() {
-	//	return location;
-	//}
-
-	//public void setLocation(GeoPt location) {
-	//	this.location = location;
-	//}
 
 	public void setId(long id) {
 		this.id = id;
