@@ -28,6 +28,7 @@
     _replyTextArea.delegate = self;
     _spinner = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(135,140,100,100)];
     _spinner.center = self.view.center;
+    [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)]];
 }
 
 - (void)didReceiveMemoryWarning {
