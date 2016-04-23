@@ -41,8 +41,14 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 		)
 public class Messages {
 
+	// the Datastore used to contain all of our data
 	public static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 	
+	/**
+	 * creates a message and adds it to the datastore
+	 * @param message the Message to create
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "createMessage", httpMethod = "post", path = "messages/createMessage")
 	public Map<String, Boolean> createMessage(Message message) {
 		if (message.timePosted == null)
@@ -57,6 +63,10 @@ public class Messages {
 		return m;
 	}
 	
+	/**
+	 * gets all the Messages that have been created
+	 * @return a list of all the Messages that have been created
+	 */
 	@ApiMethod(name = "getAllMessages", httpMethod = "get", path = "messages/getAllMessages")
 	public List<Message> getAllMessages() {
 		Query q = new Query("Message").addSort("timePosted", Query.SortDirection.DESCENDING);
@@ -68,6 +78,10 @@ public class Messages {
 		return messages;
 	}
 	
+	/**
+	 * gets the first 20 Messages sorted by time of creation
+	 * @return a list of the first 20 Messages sorted by time of creation
+	 */
 	@ApiMethod(name = "getFirst20Messages", httpMethod = "get", path = "messages/getFirst20Messages")
 	public List<Message> getFirst20Messages() {
 		Query q = new Query("Message").addSort("timePosted", Query.SortDirection.DESCENDING);
@@ -85,6 +99,11 @@ public class Messages {
 		return messages;
 	}
 
+	/**
+	 * gets the Messages for the specified user
+	 * @param username the username of the specified user
+	 * @return a list of the Messages for the specified user
+	 */
 	@ApiMethod(name = "messagesForUser", httpMethod = "get", path = "messages/messagesForUser")
 	public List<Message> messageForUser(@Named("username") String username) {
 		Filter filter = new FilterPredicate("postingUser", FilterOperator.EQUAL, username);
@@ -103,6 +122,12 @@ public class Messages {
 		}
 	}
 
+	/**
+	 * modifies a message
+	 * @param messageId the ID of the message to modify
+	 * @param modifiedMessage the modified message
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "modifyMessage", httpMethod = "post", path = "messages/modifyMessage")
 	public Map<String, Boolean> modifyMessage(@Named("messageId") long messageId, @Named("modifiedMessage")String modifiedMessage) {
 		Key messageIdKey = KeyFactory.createKey("Message", messageId);
@@ -121,6 +146,11 @@ public class Messages {
 		return result;
 	}
 
+	/**
+	 * deletes a Message
+	 * @param messageId the ID of the Message to delete
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "deleteMessage", httpMethod = "get", path = "messages/deleteMessage")
 	public Map<String, Boolean> deleteMessage(@Named("messageId") long messageId) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
@@ -140,6 +170,12 @@ public class Messages {
 		}
 	}
 
+	/**
+	 * changes the score of a Message
+	 * @param messageId the ID of the Message to change the score of
+	 * @param scoreMod the score change
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "changeScore", httpMethod = "get", path = "messages/score")
 	public Map<String, Boolean> score(@Named("messageId") long messageId, @Named("scoreMod") int scoreMod) {
 		Key messageIdKey = KeyFactory.createKey("Message", messageId);
@@ -188,6 +224,13 @@ public class Messages {
 //		return result;
 //	}
 
+	/**
+	 * gets the Messages near the user
+	 * @param username the username of the user from which to get Messages near
+	 * @param latitude the latitude of the user
+	 * @param longitude the longitude of the user
+	 * @return a list of Messages near the user
+	 */
 	@ApiMethod(name = "messagesNear", httpMethod = "get", path = "messages/messagesNear")
 	public List<Message> messagesNear(@Named("username") @Nullable String username, @Named("latitude") double latitude, @Named("longitude") double longitude) {
 		List<Message> result = new ArrayList<Message>();
@@ -231,6 +274,11 @@ public class Messages {
 		return result;
 	}
 	
+	/**
+	 * gets Replies to a specified Message
+	 * @param messageId the ID of the Message to get Replies to
+	 * @return a list of Replies to the specified Message
+	 */
 	@ApiMethod(name = "replies", httpMethod = "get", path = "replies/replies")
 	public List<Reply> replies(@Named("messageId") long messageId) {
 		Filter filter = new FilterPredicate("parentId", FilterOperator.EQUAL, messageId);
@@ -244,6 +292,11 @@ public class Messages {
 		return replies;
 	}
 	
+	/**
+	 * gets the first 20 Replies to a specified Message
+	 * @param messageId the ID of the Message to get Replies to
+	 * @return a list of Replies to the specified Message
+	 */
 	@ApiMethod(name = "getFirst20Replies", httpMethod = "get", path = "replies/getFirst20Replies")
 	public List<Reply> getFirst20Replies(@Named("messageId") long messageId) {
 		Filter filter = new FilterPredicate("parentId", FilterOperator.EQUAL, messageId);
@@ -262,6 +315,11 @@ public class Messages {
 		return replies;
 	}
 	
+	/**
+	 * creates a Reply
+	 * @param reply the Reply to create
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "createReply", httpMethod = "post", path = "replies/createReply")
 	public Map<String, Boolean> createReply(Reply reply) {
 		reply.timePosted = new Date();
@@ -275,6 +333,14 @@ public class Messages {
 		return result;
 	}
 	
+	/**
+	 * checks if password is correct for the account
+	 * @param username the username of the account
+	 * @param password the password of the account
+	 * @return accepted mapped to true if success, or mapped to false otherwise
+	 * @throws NoSuchAlgorithmException
+	 * @throws UnsupportedEncodingException
+	 */
 	@ApiMethod(name = "checkLogin", httpMethod = "get", path = "accounts/checkPassword")
 	public Map<String, Boolean> checkPassword(@Named("username") String username, @Named("password") String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
@@ -303,6 +369,12 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * creates an Account
+	 * @param username the username for the account
+	 * @param password the password for the account
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "createAccount", httpMethod = "get", path = "accounts/createAccount")
 	public Map<String, Object> createAccount(@Named("username") String username, @Named("password") String password) {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
@@ -341,6 +413,11 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * checks if username already exists as an Account
+	 * @param username the username of the Account to check
+	 * @return exists mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "checkAccount", httpMethod = "get", path = "accounts/accountExists")
 	public Map<String, Boolean> accountExists(@Named("username") String username) {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
@@ -356,6 +433,11 @@ public class Messages {
 		}
 	}
 
+	/**
+	 * checks if the social account exists
+	 * @param userId the ID of the user
+	 * @return exists mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "socialAccountExists", httpMethod = "get", path = "accounts/socialAccountExists")
 	public Map<String, Object> socialExists(@Named("userId") long userId) {
 		Filter filter = new FilterPredicate("social", FilterOperator.EQUAL, userId);
@@ -373,6 +455,12 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * creates a social account
+	 * @param username the username for the account
+	 * @param token the token for the account
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "createSocialAccount", httpMethod = "get", path = "accounts/createSocialAccount")
 	public Map<String, Object> createSocialAccount(@Named("username") String username, @Named("token") long token) {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
@@ -394,6 +482,10 @@ public class Messages {
 		return toReturn;
 	}
 
+	/**
+	 * lists all the Accounts
+	 * @return a list of all the Accounts
+	 */
 	@ApiMethod(name = "listAllAccounts", httpMethod = "get", path = "accounts/list")
 	public List<Account> getAllAccounts() {
 		Query q = new Query("Account").addSort("username", Query.SortDirection.ASCENDING);
@@ -408,6 +500,12 @@ public class Messages {
 		return accounts;
 	}
 	
+	/**
+	 * checks the social account login
+	 * @param username the username for the account
+	 * @param token the token for the account
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "checkSocialLogin", httpMethod = "get", path = "accounts/checkSocialLogin")
 	public Map<String, Boolean> checkSocialLogin(@Named("username") String username, @Named("token") long token) {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
@@ -431,6 +529,11 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * creates an empty group
+	 * @param group the Group to create
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "createEmptyGroup", httpMethod = "post", path = "groups/createEmptyGroup")
 	public Map<String, Boolean> createGroup(Group group) {
 		Key k = datastore.put(group.toEntity());
@@ -443,6 +546,12 @@ public class Messages {
 		return result;
 	}
 
+	/**
+	 * creates a Group
+	 * @param name the name of the Group
+	 * @param memberNames the names of the members of the Group
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "createGroup", httpMethod = "post", path = "groups/createGroup")
 	public Map<String, Boolean> newGroup(@Named("name") String name, MemberList memberNames) {
 		Group g = new Group(name);
@@ -464,6 +573,12 @@ public class Messages {
 		return result;
 	}
 	
+	/**
+	 * removes a user from a Group
+	 * @param username the username of the Account to remove from the Group
+	 * @param groupId the ID of the Group
+	 * @return succeeded mapped to true if success, or mapped to false otherwise
+	 */
 	@ApiMethod(name = "leaveGroup", httpMethod = "get", path = "groups/leaveGroup")
 	public Map<String, Boolean> leaveGroup(@Named("username") String username, @Named("groupId") long groupId) {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
@@ -498,6 +613,10 @@ public class Messages {
 		}
 	}
 	
+	/**
+	 * lists all the Groups
+	 * @return a list of all the Groups
+	 */
 	@ApiMethod(name = "listAllGroups", httpMethod = "get", path = "groups/listAllGroups")
 	public List<Group> listAllGroups() {
 		Query q = new Query("Group");
@@ -510,6 +629,11 @@ public class Messages {
 		return groups;
 	}
 	
+	/**
+	 * gets all the Groups that the specified user is a part of
+	 * @param username the username of the Account
+	 * @return a list of all the Groups that the specified user is a part of
+	 */
 	@ApiMethod(name = "groupsForUser", httpMethod = "get", path = "groups/groupsForUser")
 	public List<Group> listGroups(@Named("username") String username) {
 		Filter filter = new FilterPredicate("username", FilterOperator.EQUAL, username);
